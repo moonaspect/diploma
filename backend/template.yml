@@ -61,15 +61,57 @@ Resources:
         paths:
           /words:
             get:
+              summary: Get paginated or random list of Ukrainian-Japanese word pairs
+              parameters:
+                - name: pageNumber
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Page number for pagination (starts from 1)
+                - name: pageSize
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Number of items per page
+                - name: action
+                  in: query
+                  required: false
+                  schema:
+                    type: string
+                    enum: [ "default", "random" ]
+                  description: Specify "random" to get a random set of word pairs
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
                 type: aws_proxy
               responses:
                 '200':
-                  description: OK
+                  description: List of words with pagination or random selection
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          words:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                UkrainianWord:
+                                  type: string
+                                JapaneseWord:
+                                  type: string
+                          nextToken:
+                            type: string
+                            description: Token for the next page (only for paginated responses)
+
           /users:
             get:
+              summary: Get a list of users
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
@@ -77,8 +119,10 @@ Resources:
               responses:
                 '200':
                   description: OK
+
           /users/{userId}:
             get:
+              summary: Get information for a specific user by userId
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
@@ -86,8 +130,10 @@ Resources:
               responses:
                 '200':
                   description: OK
+
           /game:
             post:
+              summary: Start a new game
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
@@ -95,8 +141,10 @@ Resources:
               responses:
                 '200':
                   description: OK
+
           /game/{gameId}:
             get:
+              summary: Get game status by gameId
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
@@ -105,6 +153,7 @@ Resources:
                 '200':
                   description: OK
             post:
+              summary: Submit a move in the game
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
@@ -112,8 +161,10 @@ Resources:
               responses:
                 '200':
                   description: OK
+
           /game/{gameId}/newRound:
             post:
+              summary: Start a new round in an existing game
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
