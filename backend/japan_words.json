@@ -1,0 +1,267 @@
+﻿[
+    {
+        "WordId":  "ade56836-628b-4869-ae57-0690e2e92782",
+        "Japanese":  "ねこ",
+        "Ukrainian":  "Кіт"
+    },
+    {
+        "WordId":  "70b46970-ee93-4479-bd37-758abcd8d4c6",
+        "Japanese":  "いぬ",
+        "Ukrainian":  "Собака"
+    },
+    {
+        "WordId":  "174d5e8b-f2a0-4a9b-9837-8e609a343999",
+        "Japanese":  "さくら",
+        "Ukrainian":  "Сакура"
+    },
+    {
+        "WordId":  "7f336bcd-5f02-47b2-a308-61ac5ba13c8f",
+        "Japanese":  "やま",
+        "Ukrainian":  "Гора"
+    },
+    {
+        "WordId":  "651dd1e7-f729-4fc1-a91d-2dd7ad7fc174",
+        "Japanese":  "かわ",
+        "Ukrainian":  "Річка"
+    },
+    {
+        "WordId":  "7b430951-a41e-4a28-8d69-1ff795565c59",
+        "Japanese":  "みず",
+        "Ukrainian":  "Вода"
+    },
+    {
+        "WordId":  "60d1d9a0-5b10-4ee9-9f84-1fbcfc90d6a1",
+        "Japanese":  "ひと",
+        "Ukrainian":  "Людина"
+    },
+    {
+        "WordId":  "6b079051-9b77-4e03-9f7b-6264cf37595d",
+        "Japanese":  "ともだち",
+        "Ukrainian":  "Друг"
+    },
+    {
+        "WordId":  "079832b5-059d-4be1-a8d6-1ff99cd699e3",
+        "Japanese":  "あさ",
+        "Ukrainian":  "Ранок"
+    },
+    {
+        "WordId":  "6c35e305-8b3f-47dc-a760-b3669e5135e0",
+        "Japanese":  "よる",
+        "Ukrainian":  "Ніч"
+    },
+    {
+        "WordId":  "12fffecf-9474-42c8-a0db-199cb241957a",
+        "Japanese":  "いえ",
+        "Ukrainian":  "Будинок"
+    },
+    {
+        "WordId":  "c0a80076-937e-4f8d-804a-a3bb69815382",
+        "Japanese":  "みせ",
+        "Ukrainian":  "Магазин"
+    },
+    {
+        "WordId":  "a8c1c4bd-dbaf-4677-b958-5f5941e4a6bf",
+        "Japanese":  "くるま",
+        "Ukrainian":  "Автомобіль"
+    },
+    {
+        "WordId":  "edcda0ce-bfba-401d-8480-cf9f69f6bbb8",
+        "Japanese":  "き",
+        "Ukrainian":  "Дерево"
+    },
+    {
+        "WordId":  "ae482fdf-78e8-4271-bda5-6a3789f56e0d",
+        "Japanese":  "はな",
+        "Ukrainian":  "Квітка"
+    },
+    {
+        "WordId":  "48728db2-7970-4402-ae5f-66cae7ef6e35",
+        "Japanese":  "くも",
+        "Ukrainian":  "Хмара"
+    },
+    {
+        "WordId":  "e5def803-bf90-4670-a28a-775b8884e358",
+        "Japanese":  "そら",
+        "Ukrainian":  "Небо"
+    },
+    {
+        "WordId":  "970d530f-7a08-44b0-b071-08ba615909d6",
+        "Japanese":  "たいよう",
+        "Ukrainian":  "Сонце"
+    },
+    {
+        "WordId":  "c721e9bf-268d-481b-991d-c3ef64edc3df",
+        "Japanese":  "つき",
+        "Ukrainian":  "Місяць"
+    },
+    {
+        "WordId":  "67c802e2-91ec-4b61-a99e-42fcada82036",
+        "Japanese":  "ひる",
+        "Ukrainian":  "День"
+    },
+    {
+        "WordId":  "f65394d1-5f31-4999-b409-e293c184a05a",
+        "Japanese":  "かぜ",
+        "Ukrainian":  "Вітер"
+    },
+    {
+        "WordId":  "2786570a-8fa8-44d0-8c37-50b3c0d7c8c8",
+        "Japanese":  "ゆき",
+        "Ukrainian":  "Сніг"
+    },
+    {
+        "WordId":  "4a7d510a-63bc-49a6-8819-30c85e2b9fa3",
+        "Japanese":  "あめ",
+        "Ukrainian":  "Дощ"
+    },
+    {
+        "WordId":  "f02655c8-859f-474a-ab7e-55175bcb238f",
+        "Japanese":  "たまご",
+        "Ukrainian":  "Яйце"
+    },
+    {
+        "WordId":  "11d03f2f-0912-4da4-b67c-bbf84cce9b35",
+        "Japanese":  "ごはん",
+        "Ukrainian":  "Рис"
+    },
+    {
+        "WordId":  "a36d39c8-864e-455e-88d4-2acfbe354c77",
+        "Japanese":  "さかな",
+        "Ukrainian":  "Риба"
+    },
+    {
+        "WordId":  "68a16798-aec3-4646-957a-32e40f33449f",
+        "Japanese":  "にく",
+        "Ukrainian":  "М\u0027ясо"
+    },
+    {
+        "WordId":  "10436d6f-6eff-4ffc-98ad-b9817cc24daf",
+        "Japanese":  "くだもの",
+        "Ukrainian":  "Фрукти"
+    },
+    {
+        "WordId":  "6d24079c-5636-4b6d-9b34-40a519be5c81",
+        "Japanese":  "やさい",
+        "Ukrainian":  "Овочі"
+    },
+    {
+        "WordId":  "887070db-5d7e-4f76-92c1-a020ab9576d9",
+        "Japanese":  "にほん",
+        "Ukrainian":  "Японія"
+    },
+    {
+        "WordId":  "ce1f2961-3756-4256-8010-79764b70db32",
+        "Japanese":  "がっこう",
+        "Ukrainian":  "Школа"
+    },
+    {
+        "WordId":  "5f661be9-2746-4e1e-aac2-87bcb45bf63a",
+        "Japanese":  "せんせい",
+        "Ukrainian":  "Вчитель"
+    },
+    {
+        "WordId":  "edd1ca55-b491-4afe-b952-ab0fa4aee81f",
+        "Japanese":  "がくせい",
+        "Ukrainian":  "Студент"
+    },
+    {
+        "WordId":  "a6dde115-111b-442f-a144-2bcd4bee2213",
+        "Japanese":  "いす",
+        "Ukrainian":  "Стілець"
+    },
+    {
+        "WordId":  "a34238db-8529-4648-b1ae-857ce7a6abbf",
+        "Japanese":  "つくえ",
+        "Ukrainian":  "Стіл"
+    },
+    {
+        "WordId":  "88fedb5f-d87d-411b-8d68-c70ac1cb7bd9",
+        "Japanese":  "まど",
+        "Ukrainian":  "Вікно"
+    },
+    {
+        "WordId":  "358b454c-f84f-4789-a9a7-ce90e58a41c5",
+        "Japanese":  "ドア",
+        "Ukrainian":  "Двері"
+    },
+    {
+        "WordId":  "a85132f6-7bc6-4a7b-a0d3-fa5b6c67fb84",
+        "Japanese":  "かみ",
+        "Ukrainian":  "Папір"
+    },
+    {
+        "WordId":  "598efacc-7ea2-4105-b8d1-d2bfdbf49dff",
+        "Japanese":  "えんぴつ",
+        "Ukrainian":  "Олівець"
+    },
+    {
+        "WordId":  "a57fc5b9-ddbe-427d-b31a-77d8eecaa39f",
+        "Japanese":  "ほん",
+        "Ukrainian":  "Книга"
+    },
+    {
+        "WordId":  "fb56a43b-d851-4913-975f-7c3380cc199a",
+        "Japanese":  "て",
+        "Ukrainian":  "Рука"
+    },
+    {
+        "WordId":  "25b0b5ec-e3b6-4a74-9592-5e156fa1d054",
+        "Japanese":  "あし",
+        "Ukrainian":  "Нога"
+    },
+    {
+        "WordId":  "6e708cf0-2e32-40e6-bbe3-35fb4077f4ea",
+        "Japanese":  "め",
+        "Ukrainian":  "Око"
+    },
+    {
+        "WordId":  "9902c2d6-201d-4c32-bc00-2ae6a8424a1b",
+        "Japanese":  "みみ",
+        "Ukrainian":  "Вухо"
+    },
+    {
+        "WordId":  "be3c9e01-4f37-46f2-9796-cc32b8e20643",
+        "Japanese":  "くち",
+        "Ukrainian":  "Рот"
+    },
+    {
+        "WordId":  "525dd17d-6f0f-4364-964f-173f95a44e37",
+        "Japanese":  "はな",
+        "Ukrainian":  "Ніс"
+    },
+    {
+        "WordId":  "5f09d0bd-9413-4ce9-9a79-1742494f7b5a",
+        "Japanese":  "こころ",
+        "Ukrainian":  "Серце"
+    },
+    {
+        "WordId":  "55f6e05c-41a3-4eec-9579-518c3713fc03",
+        "Japanese":  "あたま",
+        "Ukrainian":  "Голова"
+    },
+    {
+        "WordId":  "b8218dd7-bcee-4f28-b8bb-6627d3978e4d",
+        "Japanese":  "おなか",
+        "Ukrainian":  "Живіт"
+    },
+    {
+        "WordId":  "eea2fadd-ce59-4496-b5a4-f2196255f9a5",
+        "Japanese":  "ゆび",
+        "Ukrainian":  "Палець"
+    },
+    {
+        "WordId":  "88b7aede-16ef-4f36-8d46-2bff51433173",
+        "Japanese":  "せ",
+        "Ukrainian":  "Спина"
+    },
+    {
+        "WordId":  "71451812-ce0b-4cc6-8e76-379d93f414e3",
+        "Japanese":  "つの",
+        "Ukrainian":  "Ріг"
+    },
+    {
+        "WordId":  "cd2d5627-340c-4eed-90f0-8fa2927eb47f",
+        "Japanese":  "かた",
+        "Ukrainian":  "Плече"
+    }
+]

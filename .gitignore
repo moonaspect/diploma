@@ -31,6 +31,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+# AWS
+.aws*/
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
@@ -338,5 +341,9 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+# Ignore Visual Studio and build folders in the lambda directory
+backend/lambda/.vs/
+backend/lambda/bin/
+backend/lambda/obj/
 
 # End of https://www.gitignore.io/api/csharp

@@ -1,31 +1,29 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
-Parameters:
-  S3BucketName:
-    Type: String
-    Description: Name of the S3 bucket where the JSON file is stored.
-  JSONFileName:
-    Type: String
-    Description: Name of the JSON file in the S3 bucket.
-
 Resources:
-  # Lambda function for API handling and data loading
+  # Lambda function for API handling
   MatchingPairsHandler:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: MatchingPairsHandler
-      Runtime: dotnet6
-      CodeUri: lambda/
+      Runtime: dotnet8
+      CodeUri: ./lambda/
       Handler: MatchingPairsLambda::MatchingPairsLambda.Function::FunctionHandler
+      Timeout: 15 
       Environment:
         Variables:
           TABLE_NAME: !Ref MatchingPairsTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref MatchingPairsTable
-        - S3ReadPolicy:
-            BucketName: !Ref S3BucketName
+
+  MatchingPairsHandlerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt MatchingPairsHandler.Arn
+      Principal: apigateway.amazonaws.com
 
   # DynamoDB table for storing Ukrainian-Japanese word pairs
   MatchingPairsTable:
@@ -40,15 +38,6 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  # Custom resource to load initial data from JSON file in S3 to DynamoDB
-  LoadWordsData:
-    Type: Custom::PreLoadData
-    Properties:
-      ServiceToken: !GetAtt MatchingPairsHandler.Arn
-      TableName: !Ref MatchingPairsTable
-      S3BucketName: !Ref S3BucketName
-      JSONFileName: !Ref JSONFileName
-
   # API Gateway REST API for the Matching Pairs service
   MatchingPairsApi:
     Type: AWS::Serverless::Api
@@ -59,12 +48,12 @@ Resources:
         openapi: 3.0.1
         info:
           title: MatchingPairs Service
-          description: API for Matching Pairs game similar to Duolingo
+          description: API for Matching Pairs game
           version: '1.0'
         paths:
           /words:
             get:
-              summary: Get paginated or random list of Ukrainian-Japanese word pairs
+              summary: Retrieve paginated or random list of word pairs
               parameters:
                 - name: pageNumber
                   in: query
@@ -86,14 +75,14 @@ Resources:
                   schema:
                     type: string
                     enum: [ "default", "random" ]
-                  description: Specify "random" to get a random set of word pairs
+                  description: Specify "random" for random set of word pairs
               x-amazon-apigateway-integration:
                 uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
                 httpMethod: POST
                 type: aws_proxy
               responses:
                 '200':
-                  description: List of words with pagination or random selection
+                  description: Paginated or random list of words
                   content:
                     application/json:
                       schema:
@@ -110,7 +99,16 @@ Resources:
                                   type: string
                           nextToken:
                             type: string
-                            description: Token for the next page (only for paginated responses)
+                            description: Token for the next page
+
+  # Permission for API Gateway to invoke Lambda
+  ApiGatewayInvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt MatchingPairsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MatchingPairsApi}/*
 
 Outputs:
   ApiUrl:

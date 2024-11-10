@@ -1,8 +1,8 @@
+using System.Text.Json;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using System.Text.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(
@@ -13,75 +13,110 @@ namespace MatchingPairsLambda
 {
     public class Function
     {
-        private static readonly AmazonDynamoDBClient DynamoDbClient = new AmazonDynamoDBClient();
-        private static readonly string TableName = Environment.GetEnvironmentVariable("TABLE_NAME");
+        private static readonly string? _tableName = Environment.GetEnvironmentVariable(
+            "TABLE_NAME"
+        );
 
         public async Task<APIGatewayProxyResponse> FunctionHandler(
             APIGatewayProxyRequest request,
             ILambdaContext context
         )
         {
-            var action = request.QueryStringParameters?["action"] ?? "default";
-            var pageSize = int.Parse(request.QueryStringParameters?["pageSize"] ?? "10");
-
-            if (action == "random")
+            try
             {
-                return await GetRandomWords(pageSize);
-            }
-            else
-            {
-                var pageNumber = int.Parse(request.QueryStringParameters?["pageNumber"] ?? "1");
-                return await GetWordsByPage(pageNumber, pageSize);
-            }
-        }
+                context.Logger.LogInformation(
+                    $"Received Event: {JsonSerializer.Serialize(request)}"
+                );
 
-        private async Task<APIGatewayProxyResponse> GetWordsByPage(int pageNumber, int pageSize)
-        {
-            // Calculate the number of items to skip
-            var skipCount = (pageNumber - 1) * pageSize;
+                // Get query parameters
+                var pageNumber = request.QueryStringParameters.ContainsKey("pageNumber")
+                    ? int.Parse(request.QueryStringParameters["pageNumber"])
+                    : 1;
 
-            var request = new ScanRequest { TableName = TableName, Limit = skipCount + pageSize };
+                var pageSize = request.QueryStringParameters.ContainsKey("pageSize")
+                    ? int.Parse(request.QueryStringParameters["pageSize"])
+                    : 10;
 
-            var result = await DynamoDbClient.ScanAsync(request);
-            var items = result
-                .Items.Skip(skipCount)
-                .Take(pageSize)
-                .Select(item => new
+                context.Logger.LogInformation(
+                    $"PageNumber: {pageNumber}, PageSize: {pageSize}, TableName: {_tableName ?? "MatchingPairsTable"}"
+                );
+
+                AmazonDynamoDBConfig config = new AmazonDynamoDBConfig { LogMetrics = true };
+                var dynamoDbClient = new AmazonDynamoDBClient(config);
+
+                ScanResponse? scanResponse = null;
+
+                try
                 {
-                    UkrainianWord = item["UkrainianWord"].S,
-                    JapaneseWord = item["JapaneseWord"].S
-                })
-                .ToList();
+                    context.Logger.LogInformation(
+                        $"AWS Region: {dynamoDbClient.Config.RegionEndpoint}"
+                    );
 
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = 200,
-                Body = JsonSerializer.Serialize(new { words = items }),
-                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-            };
-        }
+                    // Scan DynamoDB Table
+                    var scanRequest = new ScanRequest { TableName = _tableName, };
 
-        private async Task<APIGatewayProxyResponse> GetRandomWords(int pageSize)
-        {
-            var request = new ScanRequest { TableName = TableName };
+                    scanResponse = await dynamoDbClient.ScanAsync(scanRequest);
 
-            var result = await DynamoDbClient.ScanAsync(request);
-            var randomItems = result
-                .Items.OrderBy(x => Guid.NewGuid())
-                .Take(pageSize)
-                .Select(item => new
+                    context.Logger.LogInformation($"Scan response: {scanResponse.ScannedCount}");
+                }
+                catch (Exception ex)
                 {
-                    UkrainianWord = item["UkrainianWord"].S,
-                    JapaneseWord = item["JapaneseWord"].S
-                })
-                .ToList();
+                    context.Logger.LogError($"Error scanning DynamoDB table: {ex.Message}");
+                    context.Logger.LogError($"Stack Trace: {ex.StackTrace}");
+                    throw; // Rethrow to ensure the exception is captured in the Lambda response
+                }
 
-            return new APIGatewayProxyResponse
+                // Apply pagination manually
+                var totalItems = scanResponse.Items.Count;
+                var paginatedItems = scanResponse
+                    .Items.Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(item => new
+                    {
+                        WordId = item["WordId"].S,
+                        Japanese = item["Japanese"].S,
+                        Ukrainian = item["Ukrainian"].S
+                    })
+                    .ToList();
+
+                context.Logger.LogInformation($"Total Items Retrieved: {paginatedItems.Count}");
+
+                // Return the response
+                var responseBody = new
+                {
+                    TotalItems = totalItems,
+                    Items = paginatedItems,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                var options = new JsonSerializerOptions
+                {
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = false
+                };
+                var responseBodyJson = JsonSerializer.Serialize(responseBody, options);
+
+                return new APIGatewayProxyResponse
+                {
+                    StatusCode = 200,
+                    Body = responseBodyJson,
+                    Headers = new Dictionary<string, string>
+                    {
+                        { "Content-Type", "application/json" }
+                    }
+                };
+            }
+            catch (Exception ex)
             {
-                StatusCode = 200,
-                Body = JsonSerializer.Serialize(new { words = randomItems }),
-                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-            };
+                context.Logger.LogError($"Error: {ex.Message}");
+                return new APIGatewayProxyResponse
+                {
+                    StatusCode = 500,
+                    Body = $"Internal server error: {ex.Message}",
+                    Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
+                };
+            }
         }
     }
 }
