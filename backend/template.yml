@@ -1,8 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: Name of the S3 bucket where the JSON file is stored.
+  JSONFileName:
+    Type: String
+    Description: Name of the JSON file in the S3 bucket.
+
 Resources:
-  # Lambda function for API handling
+  # Lambda function for API handling and data loading
   MatchingPairsHandler:
     Type: AWS::Serverless::Function
     Properties:
@@ -13,38 +21,33 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref MatchingPairsTable
-          BUCKET_NAME: !Ref MatchingPairsMediaBucket
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref MatchingPairsTable
-        - S3CrudPolicy:
-            BucketName: !Ref MatchingPairsMediaBucket
+        - S3ReadPolicy:
+            BucketName: !Ref S3BucketName
 
-  # DynamoDB table for storing user and word information
+  # DynamoDB table for storing Ukrainian-Japanese word pairs
   MatchingPairsTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: MatchingPairsTable
       AttributeDefinitions:
-        - AttributeName: UserId
-          AttributeType: S
         - AttributeName: WordId
           AttributeType: S
       KeySchema:
-        - AttributeName: UserId
-          KeyType: HASH
         - AttributeName: WordId
-          KeyType: RANGE
+          KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  # S3 bucket for multimedia storage
-  MatchingPairsMediaBucket:
-    Type: AWS::S3::Bucket
+  # Custom resource to load initial data from JSON file in S3 to DynamoDB
+  LoadWordsData:
+    Type: Custom::PreLoadData
     Properties:
-      BucketName: matching-pairs-media-bucket
-      VersioningConfiguration:
-        Status: Enabled
-      DeletionPolicy: Retain
+      ServiceToken: !GetAtt MatchingPairsHandler.Arn
+      TableName: !Ref MatchingPairsTable
+      S3BucketName: !Ref S3BucketName
+      JSONFileName: !Ref JSONFileName
 
   # API Gateway REST API for the Matching Pairs service
   MatchingPairsApi:
@@ -101,77 +104,13 @@ Resources:
                             items:
                               type: object
                               properties:
-                                UkrainianWord:
+                                Japanese:
                                   type: string
-                                JapaneseWord:
+                                Ukrainian:
                                   type: string
                           nextToken:
                             type: string
                             description: Token for the next page (only for paginated responses)
-
-          /users:
-            get:
-              summary: Get a list of users
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
-
-          /users/{userId}:
-            get:
-              summary: Get information for a specific user by userId
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
-
-          /game:
-            post:
-              summary: Start a new game
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
-
-          /game/{gameId}:
-            get:
-              summary: Get game status by gameId
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
-            post:
-              summary: Submit a move in the game
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
-
-          /game/{gameId}/newRound:
-            post:
-              summary: Start a new round in an existing game
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: OK
 
 Outputs:
   ApiUrl:
@@ -180,6 +119,3 @@ Outputs:
   DynamoDBTableName:
     Description: Name of the DynamoDB table
     Value: !Ref MatchingPairsTable
-  S3BucketName:
-    Description: Name of the S3 bucket
-    Value: !Ref MatchingPairsMediaBucket
