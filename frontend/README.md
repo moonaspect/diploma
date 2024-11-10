@@ -1,0 +1,1 @@
+This is a blank frontend project (yet)
