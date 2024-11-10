@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  # Lambda function for API handling
+  MatchingPairsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: MatchingPairsHandler
+      Runtime: dotnet6
+      CodeUri: lambda/
+      Handler: MatchingPairsLambda::MatchingPairsLambda.Function::FunctionHandler
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MatchingPairsTable
+          BUCKET_NAME: !Ref MatchingPairsMediaBucket
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MatchingPairsTable
+        - S3CrudPolicy:
+            BucketName: !Ref MatchingPairsMediaBucket
+
+  # DynamoDB table for storing user and word information
+  MatchingPairsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: MatchingPairsTable
+      AttributeDefinitions:
+        - AttributeName: UserId
+          AttributeType: S
+        - AttributeName: WordId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: UserId
+          KeyType: HASH
+        - AttributeName: WordId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  # S3 bucket for multimedia storage
+  MatchingPairsMediaBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: matching-pairs-media-bucket
+      VersioningConfiguration:
+        Status: Enabled
+      DeletionPolicy: Retain
+
+  # API Gateway REST API for the Matching Pairs service
+  MatchingPairsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: MatchingPairsApi
+      StageName: prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: MatchingPairs Service
+          description: API for Matching Pairs game similar to Duolingo
+          version: '1.0'
+        paths:
+          /words:
+            get:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+          /users:
+            get:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+          /users/{userId}:
+            get:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+          /game:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+          /game/{gameId}:
+            get:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+          /game/{gameId}/newRound:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: OK
+
+Outputs:
+  ApiUrl:
+    Description: URL for the API Gateway
+    Value: !Sub "https://${MatchingPairsApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
+  DynamoDBTableName:
+    Description: Name of the DynamoDB table
+    Value: !Ref MatchingPairsTable
+  S3BucketName:
+    Description: Name of the S3 bucket
+    Value: !Ref MatchingPairsMediaBucket
