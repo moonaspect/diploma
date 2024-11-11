@@ -1,1 +1,1 @@
-This is a blank frontend project (yet)
+This is a blank frontend project
