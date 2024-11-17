@@ -17,11 +17,6 @@ namespace Japanese
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
         }
 
-        private async void MatchGame_Loaded(object sender, RoutedEventArgs e)
-        {
-            await ViewModel.LoadWordsAsync();
-        }
-
         private void JapaneseWordButton_Click(object sender, RoutedEventArgs e)
         {
             selectedJapaneseButton = sender as Button;
@@ -49,7 +44,7 @@ namespace Japanese
                 }
                 else
                 {
-                    MessageBox.Show("Неправильно, попробуйте снова.");
+                    MessageBox.Show("Неправильно, спробуйте знову.");
                 }
 
                 selectedJapaneseButton = null;
