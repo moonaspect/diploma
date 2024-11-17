@@ -11,12 +11,10 @@ namespace Japanese
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
 
-        private MatchGameViewModel ViewModel => (MatchGameViewModel)DataContext;
-
         public MatchGame()
         {
             InitializeComponent();
-            Loaded += MatchGame_Loaded;
+            Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
         }
 
         private async void MatchGame_Loaded(object sender, RoutedEventArgs e)
@@ -59,11 +57,11 @@ namespace Japanese
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             MainWindow main = new MainWindow();
             main.Show();
-            this.Close();
+            Close();
         }
     }
 }
