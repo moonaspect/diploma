@@ -34,8 +34,8 @@ namespace Japanese
             if (selectedJapaneseButton != null && selectedTranslationButton != null)
             {
                 if (
-                    selectedJapaneseButton.Tag.ToString()
-                    == selectedTranslationButton.Tag.ToString()
+                    selectedJapaneseButton.Uid.ToString()
+                    == selectedTranslationButton.Uid.ToString()
                 )
                 {
                     MessageBox.Show("Правильно!");

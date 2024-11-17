@@ -50,6 +50,7 @@ namespace Japanese
 
     public class WordPair
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? Japanese { get; set; }
         public string? Ukrainian { get; set; }
     }

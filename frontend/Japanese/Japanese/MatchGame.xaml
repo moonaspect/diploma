@@ -25,7 +25,7 @@
             <ItemsControl Grid.Column="0" ItemsSource="{Binding WordPairs}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Japanese}" Width="100" Height="50" Margin="5"/>
+                        <Button Content="{Binding Japanese}" Uid="{Binding Id}" Width="100" Height="50" Margin="5" Click="JapaneseWordButton_Click"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -33,7 +33,7 @@
             <ItemsControl Grid.Column="1" ItemsSource="{Binding WordPairs}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Ukrainian}" Width="100" Height="50" Margin="5"/>
+                        <Button Content="{Binding Ukrainian}" Uid="{Binding Id}" Width="100" Height="50" Margin="5" Click="TranslationButton_Click"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
