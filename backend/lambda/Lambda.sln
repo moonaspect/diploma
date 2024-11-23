@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameRecordsLambda", "GameRecordsLambda\GameRecordsLambda.csproj", "{E23EC8B2-427B-4C56-A3B6-257FF5755146}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingPairsLambda", "MatchingPairsLambda\MatchingPairsLambda.csproj", "{5DFE5BDC-38F1-42F2-B714-15350AAF9D16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E23EC8B2-427B-4C56-A3B6-257FF5755146}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E23EC8B2-427B-4C56-A3B6-257FF5755146}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E23EC8B2-427B-4C56-A3B6-257FF5755146}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E23EC8B2-427B-4C56-A3B6-257FF5755146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DFE5BDC-38F1-42F2-B714-15350AAF9D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DFE5BDC-38F1-42F2-B714-15350AAF9D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DFE5BDC-38F1-42F2-B714-15350AAF9D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DFE5BDC-38F1-42F2-B714-15350AAF9D16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E8BD0C8-3FA8-4DFF-BC4E-88F933D76BCA}
+	EndGlobalSection
+EndGlobal
