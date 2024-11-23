@@ -8,7 +8,7 @@ Resources:
     Properties:
       FunctionName: MatchingPairsHandler
       Runtime: dotnet8
-      CodeUri: ./lambda/
+      CodeUri: ./lambda/MatchingPairs/
       Handler: MatchingPairsLambda::MatchingPairsLambda.Function::FunctionHandler
       Timeout: 15 
       Environment:
@@ -38,68 +38,209 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  # API Gateway REST API for the Matching Pairs service
-  MatchingPairsApi:
-    Type: AWS::Serverless::Api
+ GameRecordsHandler:
+    Type: AWS::Lambda::Function
     Properties:
-      Name: MatchingPairsApi
-      StageName: prod
-      DefinitionBody:
-        openapi: 3.0.1
-        info:
-          title: MatchingPairs Service
-          description: API for Matching Pairs game
-          version: '1.0'
-        paths:
-          /words:
-            get:
-              summary: Retrieve paginated or random list of word pairs
-              parameters:
-                - name: pageNumber
-                  in: query
-                  required: false
+      FunctionName: GameRecordsHandler
+      Handler: GameRecordsLambda::GameRecordsLambda.Function::FunctionHandler
+      Role: !GetAtt GameRecordsHandlerRole.Arn
+      Runtime: dotnet8
+      CodeUri: ./lambda/GameRecordsLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref GameRecordsTable
+      MemorySize: 128
+      Timeout: 10
+
+  GameRecordsHandlerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt GameRecordsHandler.Arn
+      Principal: apigateway.amazonaws.com
+
+  GameRecordsHandlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: GameRecordsDynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt GameRecordsTable.Arn
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  # DynamoDB table for storing records
+  GameRecordsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: GameRecordsTable
+      AttributeDefinitions:
+        - AttributeName: PlayerId
+          AttributeType: S
+        - AttributeName: Score
+          AttributeType: N
+      KeySchema:
+        - AttributeName: PlayerId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+# API Gateway REST API for the Matching Pairs service
+MatchingPairsApi:
+  Type: AWS::Serverless::Api
+  Properties:
+    Name: MatchingPairsApi
+    StageName: prod
+    DefinitionBody:
+      openapi: 3.0.1
+      info:
+        title: MatchingPairs Service
+        description: API for Matching Pairs game
+        version: '1.0'
+      paths:
+        /words:
+          get:
+            summary: Retrieve paginated or random list of word pairs
+            parameters:
+              - name: pageNumber
+                in: query
+                required: false
+                schema:
+                  type: integer
+                  minimum: 1
+                description: Page number for pagination (starts from 1)
+              - name: pageSize
+                in: query
+                required: false
+                schema:
+                  type: integer
+                  minimum: 1
+                description: Number of items per page
+              - name: action
+                in: query
+                required: false
+                schema:
+                  type: string
+                  enum: [ "default", "random" ]
+                description: Specify "random" for random set of word pairs
+            x-amazon-apigateway-integration:
+              uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+              httpMethod: POST
+              type: aws_proxy
+            responses:
+              '200':
+                description: Paginated or random list of words
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        words:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              Japanese:
+                                type: string
+                              Ukrainian:
+                                type: string
+                        nextToken:
+                          type: string
+                          description: Token for the next page
+        /records:
+          get:
+            summary: Retrieve paginated game records
+            parameters:
+              - name: pageNumber
+                in: query
+                required: false
+                schema:
+                  type: integer
+                  minimum: 1
+                description: Page number for pagination (starts from 1)
+              - name: pageSize
+                in: query
+                required: false
+                schema:
+                  type: integer
+                  minimum: 1
+                description: Number of items per page
+            x-amazon-apigateway-integration:
+              uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
+              httpMethod: GET
+              type: aws_proxy
+            responses:
+              '200':
+                description: Paginated list of game records
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        TotalItems:
+                          type: integer
+                        Items:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              PlayerId:
+                                type: string
+                              Score:
+                                type: integer
+                        PageNumber:
+                          type: integer
+                        PageSize:
+                          type: integer
+          post:
+            summary: Save a game record
+            requestBody:
+              description: Game record to save
+              required: true
+              content:
+                application/json:
                   schema:
-                    type: integer
-                    minimum: 1
-                  description: Page number for pagination (starts from 1)
-                - name: pageSize
-                  in: query
-                  required: false
-                  schema:
-                    type: integer
-                    minimum: 1
-                  description: Number of items per page
-                - name: action
-                  in: query
-                  required: false
-                  schema:
-                    type: string
-                    enum: [ "default", "random" ]
-                  description: Specify "random" for random set of word pairs
-              x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-                httpMethod: POST
-                type: aws_proxy
-              responses:
-                '200':
-                  description: Paginated or random list of words
-                  content:
-                    application/json:
-                      schema:
-                        type: object
-                        properties:
-                          words:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                Japanese:
-                                  type: string
-                                Ukrainian:
-                                  type: string
-                          nextToken:
-                            type: string
-                            description: Token for the next page
+                    type: object
+                    properties:
+                      PlayerId:
+                        type: string
+                      Score:
+                        type: integer
+                    required: [PlayerId, Score]
+            x-amazon-apigateway-integration:
+              uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
+              httpMethod: POST
+              type: aws_proxy
+            responses:
+              '200':
+                description: Record saved successfully
+                content:
+                  text/plain:
+                    schema:
+                      type: string
+
+  # Permission for API Gateway to invoke GameRecordsHandler Lambda
+  ApiGatewayInvokeGameRecordsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GameRecordsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MatchingPairsApi}/*
 
   # Permission for API Gateway to invoke Lambda
   ApiGatewayInvokeLambdaPermission:
