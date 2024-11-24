@@ -35,12 +35,9 @@ namespace GameRecordsLambda
                 if (httpMethod == "POST")
                 {
                     // Add record to DynamoDB
-                    var requestBody = JsonSerializer.Deserialize<Dictionary<string, string>>(
-                        request.Body
-                    );
-
-                    var playerId = requestBody["PlayerId"];
-                    var score = int.Parse(requestBody["Score"]);
+                    var requestBody = JsonSerializer.Deserialize<GameRecordRequest>(request.Body);
+                    var playerId = requestBody?.PlayerId;
+                    var score = requestBody?.Score;
 
                     var putRequest = new PutItemRequest
                     {
