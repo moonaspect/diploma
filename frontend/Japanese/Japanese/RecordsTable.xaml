@@ -1,0 +1,48 @@
+﻿<Window x:Class="Japanese.RecordsTable"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Japanese"
+        mc:Ignorable="d"
+        Title="Game Records" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Game Records Table"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="10"
+                   Grid.Row="0"/>
+
+        <DataGrid ItemsSource="{Binding GameRecords}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  Margin="10"
+                  Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Player ID" Binding="{Binding PlayerId}" Width="*"/>
+                <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="10"
+                    Grid.Row="2">
+            <Button Content="Refresh"
+                    Width="100"
+                    Margin="5"
+                    Command="{Binding LoadRecordsCommand}"/>
+            <Button Content="Add Record"
+                    Width="100"
+                    Margin="5"
+                    Command="{Binding SaveRecordCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

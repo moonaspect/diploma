@@ -1,8 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using SharpVectors.Converters;
-using SharpVectors.Renderers.Wpf;
 
 namespace Japanese
 {
@@ -34,30 +32,24 @@ namespace Japanese
             };
 
             // Add buttons to the StackPanel
-            Button buttonMatch = new Button
-            {
-                Content = "Гра на зіставлення",
-            };
+            Button buttonMatch = new Button { Content = "Гра на зіставлення", };
             buttonMatch.Click += ButtonMatch;
 
-            Button buttonDictionary = new Button
-            {
-                Content = "Словник"
-            };
+            Button buttonDictionary = new Button { Content = "Словник" };
+
+            Button buttonRecords = new Button { Content = "Рекорди" };
+            buttonRecords.Click += ButtonRecords;
 
             stackPanel.Children.Add(buttonMatch);
             stackPanel.Children.Add(buttonDictionary);
+            stackPanel.Children.Add(buttonRecords);
 
             // Add the StackPanel to the first column of the Grid
             Grid.SetColumn(stackPanel, 0);
             mainGrid.Children.Add(stackPanel);
 
             // Create the Button with SvgViewbox for the second column
-            Button svgButton = new Button
-            {
-                Width = 100,
-                Height = 50
-            };
+            Button svgButton = new Button { Width = 100, Height = 50 };
 
             SvgViewbox svgViewbox = new SvgViewbox
             {
@@ -80,7 +72,14 @@ namespace Japanese
         {
             MatchGame matchGame = new MatchGame();
             matchGame.Show();
-            this.Close();
+            Close();
+        }
+
+        private void ButtonRecords(object sender, RoutedEventArgs e)
+        {
+            RecordsTable recordsTable = new RecordsTable();
+            recordsTable.Show();
+            Close();
         }
     }
 }
