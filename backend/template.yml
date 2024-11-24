@@ -92,8 +92,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: PlayerId
           AttributeType: S
-        - AttributeName: Score
-          AttributeType: N
       KeySchema:
         - AttributeName: PlayerId
           KeyType: HASH
@@ -240,7 +238,7 @@ Resources:
       FunctionName: !GetAtt GameRecordsHandler.Arn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MatchingPairsApi}/*
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
 
   # Permission for API Gateway to invoke Lambda
   ApiGatewayInvokeLambdaPermission:
@@ -249,16 +247,13 @@ Resources:
       FunctionName: !GetAtt MatchingPairsHandler.Arn
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MatchingPairsApi}/*
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
 
 Outputs:
   MatchingPairsApi:
     Value: !Ref MatchingPairsApi
     Export:
       Name: MatchingPairsApiExport
-  ApiUrl:
-    Description: URL for the API Gateway
-    Value: !Sub "https://${MatchingPairsApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
   DynamoDBTableName:
     Description: Name of the DynamoDB table
     Value: !Ref MatchingPairsTable

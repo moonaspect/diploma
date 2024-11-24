@@ -7,5 +7,5 @@ region = "eu-north-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 disable_rollback = true
-parameter_overrides = "S3BucketName=\"diploma-japan-words\" JSONFileName=\"japan_words.json\""
+parameter_overrides = "ApiGatewaySourceArn=\"{'Fn::Sub': 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*'}\""
 image_repositories = []
