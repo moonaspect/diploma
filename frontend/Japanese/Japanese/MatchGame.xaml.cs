@@ -10,6 +10,7 @@ namespace Japanese
     {
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
+        private int nextCount = 0;
 
         public MatchGame()
         {
@@ -29,6 +30,10 @@ namespace Japanese
             CheckForMatch();
         }
 
+        private void NextPage()
+        {
+
+        }
         private void CheckForMatch()
         {
             if (selectedJapaneseButton != null && selectedTranslationButton != null)
@@ -41,6 +46,11 @@ namespace Japanese
                     MessageBox.Show("Правильно!");
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
+                    nextCount++;
+                    if(nextCount==4)
+                    {
+                        NextPage();
+                    }
                 }
                 else
                 {
@@ -51,6 +61,7 @@ namespace Japanese
                 selectedTranslationButton = null;
             }
         }
+
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {

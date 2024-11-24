@@ -8,4 +8,19 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Frame2.svg" />
+    <None Remove="Variant2.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpVectors" Version="1.8.4.2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Frame2.svg" />
+    <Resource Include="Variant2.svg" />
+  </ItemGroup>
+
 </Project>

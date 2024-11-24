@@ -4,7 +4,11 @@
              xmlns:local="clr-namespace:Japanese"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary>
-        </ResourceDictionary>
+        <!--<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                --><!-- Verify this path --><!--
+                <ResourceDictionary Source="pack://application:,,,/SharpVectors.Renderers.Wpf;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>-->
     </Application.Resources>
 </Application>
