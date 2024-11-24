@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Input;
 
 namespace Japanese
 {
@@ -17,7 +18,19 @@ namespace Japanese
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        // Method to load records from the API
+        // Commands
+        public ICommand LoadRecordsCommand { get; }
+        public ICommand SaveRecordCommand { get; }
+
+        public RecordsViewModel()
+        {
+            // Initialize Commands
+            LoadRecordsCommand = new RelayCommand(async _ => await LoadRecordsAsync());
+            SaveRecordCommand = new RelayCommand(async _ =>
+                await SaveRecordAsync(new GameRecord { PlayerId = "NewPlayer", Score = 100 })
+            );
+        }
+
         public async Task LoadRecordsAsync(int pageNumber = 1, int pageSize = 10)
         {
             try
@@ -39,13 +52,13 @@ namespace Japanese
                     OnPropertyChanged(nameof(GameRecords));
                 }
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                // Handle error (e.g., log it or display a message to the user)
+                // Handle error
+                Console.WriteLine($"Error loading records: {ex.Message}");
             }
         }
 
-        // Method to save a record to the API
         public async Task SaveRecordAsync(GameRecord record)
         {
             try
@@ -55,11 +68,12 @@ namespace Japanese
 
                 var response = await HttpClient.PostAsync(ApiUrl, httpContent);
                 response.EnsureSuccessStatusCode();
-                // Optionally handle the response if needed
+                await LoadRecordsAsync(); // Reload the table after saving
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException ex)
             {
-                // Handle error (e.g., log it or display a message to the user)
+                // Handle error
+                Console.WriteLine($"Error saving record: {ex.Message}");
             }
         }
 
@@ -69,19 +83,37 @@ namespace Japanese
         }
     }
 
-    // Record class for game records
     public class GameRecord
     {
         public string PlayerId { get; set; } = Guid.NewGuid().ToString();
         public int Score { get; set; }
     }
 
-    // Response class for the game records API
     public class GameRecordsResponse
     {
         public int TotalItems { get; set; }
         public required GameRecord[] Items { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+    }
+
+    public class RelayCommand : ICommand
+    {
+        private readonly Func<object?, Task> execute;
+        private readonly Func<object?, bool>? canExecute;
+
+        public RelayCommand(Func<object?, Task> execute, Func<object?, bool>? canExecute = null)
+        {
+            this.execute = execute;
+            this.canExecute = canExecute;
+        }
+
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object? parameter) => canExecute == null || canExecute(parameter);
+
+        public async void Execute(object? parameter) => await execute(parameter);
+
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }
