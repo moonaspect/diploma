@@ -27,10 +27,12 @@ namespace GameRecordsLambda
                     $"Received Event: {JsonSerializer.Serialize(request)}"
                 );
 
+                var httpMethod = request.HttpMethod ?? request.RequestContext.HttpMethod;
+
                 AmazonDynamoDBConfig config = new AmazonDynamoDBConfig { LogMetrics = true };
                 var dynamoDbClient = new AmazonDynamoDBClient(config);
 
-                if (request.HttpMethod == "POST")
+                if (httpMethod == "POST")
                 {
                     // Add record to DynamoDB
                     var requestBody = JsonSerializer.Deserialize<Dictionary<string, string>>(
@@ -68,7 +70,7 @@ namespace GameRecordsLambda
                         }
                     };
                 }
-                else if (request.HttpMethod == "GET")
+                else if (httpMethod == "GET")
                 {
                     // Retrieve records with pagination
                     var pageNumber = request.QueryStringParameters.ContainsKey("pageNumber")
