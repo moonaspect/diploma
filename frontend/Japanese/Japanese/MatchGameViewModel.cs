@@ -11,16 +11,21 @@ namespace Japanese
             new ObservableCollection<WordPair>();
 
         private static readonly HttpClient HttpClient = new HttpClient();
-        private const string ApiUrl =
-            "https://khbczj8mb0.execute-api.eu-north-1.amazonaws.com/prod/words?pageNumber=1&pageSize=4";
+        private int currentPage = 1;
+        private const string ApiUrlBase = "https://khbczj8mb0.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=4&pageNumber=";
+        private const string ApiUrl = "https://khbczj8mb0.execute-api.eu-north-1.amazonaws.com/prod/words?pageNumber=1&pageSize=4";
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
+        public void IncrementPage()
+        {
+            currentPage++;
+        }
         public async Task LoadWordsAsync()
         {
             try
             {
-                var response = await HttpClient.GetAsync(ApiUrl);
+                var apiUrlWithPage = $"{ApiUrlBase}{currentPage}";
+                var response = await HttpClient.GetAsync(apiUrlWithPage);
                 response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync();
 

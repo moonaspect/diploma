@@ -53,20 +53,41 @@ namespace Japanese
             mainGrid.Children.Add(stackPanel);
 
             // Create the Button with SvgViewbox for the second column
-            Button svgButton = new Button
+
+            SvgViewbox defaultViewbox = new SvgViewbox
             {
-                Width = 100,
-                Height = 50
+                Source = new Uri("pack://application:,,,/Frame2.svg"),
+                Stretch = System.Windows.Media.Stretch.Fill,
             };
 
-            SvgViewbox svgViewbox = new SvgViewbox
+            SvgViewbox pressedViewbox = new SvgViewbox
             {
                 Source = new Uri("pack://application:,,,/Variant2.svg"),
-                Stretch = System.Windows.Media.Stretch.Uniform
+                Stretch = System.Windows.Media.Stretch.Fill,
             };
 
+            Button svgButton = new Button
+            {
+                Width = 150,
+                Height = 38,
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                Content = defaultViewbox,
+            };
+
+            
+
             // Add SvgViewbox to the Button's content
-            svgButton.Content = svgViewbox;
+            svgButton.PreviewMouseDown += (sender, args) =>
+            {
+                svgButton.Content = pressedViewbox;
+            };
+
+            // Handle MouseUp to revert the content
+            svgButton.PreviewMouseUp += (sender, args) =>
+            {
+                svgButton.Content = defaultViewbox;
+            };
 
             // Add the Button to the second column of the Grid
             Grid.SetColumn(svgButton, 1);

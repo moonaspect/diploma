@@ -16,6 +16,7 @@ namespace Japanese
         {
             InitializeComponent();
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
+            ViewModel = new MatchGameViewModel();
         }
 
         private void JapaneseWordButton_Click(object sender, RoutedEventArgs e)
@@ -30,9 +31,13 @@ namespace Japanese
             CheckForMatch();
         }
 
-        private void NextPage()
+        private async void NextPage()
         {
-
+            nextCount = 0;
+            ViewModel.IncrementPage();
+            await ViewModel.LoadWordsAsync();
+            selectedJapaneseButton = null;
+            selectedTranslationButton = null;
         }
         private void CheckForMatch()
         {
