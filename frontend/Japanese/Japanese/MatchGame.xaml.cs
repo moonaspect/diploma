@@ -10,13 +10,14 @@ namespace Japanese
     {
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
-        private int nextCount = 0;
+        private int currentBatchMatches = 0; // Number of matched pairs in the current batch
+        private int totalMatches = 0; // Total number of matches across all batches
+        private const int MaxMatches = 40; // Stop the game after 40 matches
 
         public MatchGame()
         {
             InitializeComponent();
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
-            ViewModel = new MatchGameViewModel();
         }
 
         private void JapaneseWordButton_Click(object sender, RoutedEventArgs e)
@@ -31,31 +32,38 @@ namespace Japanese
             CheckForMatch();
         }
 
-        private async void NextPage()
-        {
-            nextCount = 0;
-            //ViewModel.IncrementPage();
-            //await ViewModel.LoadWordsAsync();
-            selectedJapaneseButton = null;
-            selectedTranslationButton = null;
-        }
-
         private void CheckForMatch()
         {
             if (selectedJapaneseButton != null && selectedTranslationButton != null)
             {
-                if (
-                    selectedJapaneseButton.Uid.ToString()
-                    == selectedTranslationButton.Uid.ToString()
-                )
+                // Check if the UIDs of the selected buttons match
+                if (selectedJapaneseButton.Uid == selectedTranslationButton.Uid)
                 {
                     MessageBox.Show("Правильно!");
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
-                    nextCount++;
-                    if (nextCount == 4)
+
+                    currentBatchMatches++;
+                    totalMatches++;
+                    ViewModel.IncrementMatchCount();
+
+                    // Check if the current batch is completed
+                    if (currentBatchMatches == 4)
                     {
-                        NextPage();
+                        currentBatchMatches = 0;
+                        ViewModel.LoadNextBatch(); // Load the next set of 4 pairs
+                    }
+
+                    // Check if the game is completed
+                    if (totalMatches == MaxMatches)
+                    {
+                        MessageBox.Show(
+                            "Congratulations! You have matched all 40 pairs!",
+                            "Game Over",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                        Close(); // Close the game window or restart logic
                     }
                 }
                 else
@@ -63,6 +71,7 @@ namespace Japanese
                     MessageBox.Show("Неправильно, спробуйте знову.");
                 }
 
+                // Reset the selected buttons
                 selectedJapaneseButton = null;
                 selectedTranslationButton = null;
             }
