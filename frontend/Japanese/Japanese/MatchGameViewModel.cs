@@ -23,10 +23,20 @@ namespace Japanese
         private const int MaxMatches = 20; // Stop game after 20 matches
         private const int BatchSize = 4; // Number of pairs in a batch
 
+        private string _gameMessage = "Match the words!"; // Default game message
+        public string GameMessage
+        {
+            get => _gameMessage;
+            set
+            {
+                _gameMessage = value;
+                OnPropertyChanged(nameof(GameMessage));
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public event EventHandler? GameOver; // Event to notify when the game is over
-        public event EventHandler? BatchComplete; // Event to notify when a batch is completed
 
         public MatchGameViewModel() => _ = LoadWordsAsync();
 
@@ -66,12 +76,7 @@ namespace Japanese
             }
             catch (HttpRequestException ex)
             {
-                MessageBox.Show(
-                    $"Failed to load words: {ex.Message}",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error
-                );
+                GameMessage = $"Failed to load words: {ex.Message}";
             }
         }
 
@@ -85,6 +90,7 @@ namespace Japanese
 
             if (_matchedPairsCount >= MaxMatches)
             {
+                GameMessage = $"Congratulations! You have matched all {MaxMatches} pairs!";
                 GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI that the game is over
                 return;
             }
@@ -92,9 +98,21 @@ namespace Japanese
             if (_currentBatchMatches == BatchSize)
             {
                 _currentBatchMatches = 0; // Reset batch counter
-                BatchComplete?.Invoke(this, EventArgs.Empty); // Notify the UI that the batch is complete
+                GameMessage = "Batch complete! Loading next set of words...";
                 LoadNextBatch(); // Load the next batch
             }
+            else
+            {
+                GameMessage = "Correct! Keep going!";
+            }
+        }
+
+        /// <summary>
+        /// Tracks mismatches and updates the game message accordingly.
+        /// </summary>
+        public void HandleMismatch()
+        {
+            GameMessage = "Incorrect, try again!";
         }
 
         /// <summary>
@@ -104,6 +122,7 @@ namespace Japanese
         {
             if (_matchedPairsCount >= MaxMatches)
             {
+                GameMessage = "Congratulations! You have matched all 20 pairs!";
                 GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI of game-over
                 return;
             }
@@ -160,8 +179,6 @@ namespace Japanese
     /// </summary>
     public class WordPair
     {
-        [System.Text.Json.Serialization.JsonIgnore]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? WordId { get; set; }
         public string? Japanese { get; set; }
         public string? Ukrainian { get; set; }

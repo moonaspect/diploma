@@ -16,7 +16,6 @@ namespace Japanese
             InitializeComponent();
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
             ViewModel.GameOver += OnGameOver; // Subscribe to GameOver event
-            ViewModel.BatchComplete += OnBatchComplete;
         }
 
         private void JapaneseWordButton_Click(object sender, RoutedEventArgs e)
@@ -37,15 +36,13 @@ namespace Japanese
             {
                 if (selectedJapaneseButton.Uid == selectedTranslationButton.Uid)
                 {
-                    MessageBox.Show("Correct!");
+                    ViewModel.HandleMatch(); // Delegate match handling to the ViewModel
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
-
-                    ViewModel.HandleMatch(); // Delegate match handling to the ViewModel
                 }
                 else
                 {
-                    MessageBox.Show("Incorrect, try again.");
+                    ViewModel.HandleMismatch(); // Notify ViewModel of a mismatch
                 }
 
                 selectedJapaneseButton = null;
@@ -55,23 +52,8 @@ namespace Japanese
 
         private void OnGameOver(object? sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Congratulations! You have matched all 20 pairs!",
-                "Game Over",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
+            // Optionally handle additional logic if needed during game over.
             Close();
-        }
-
-        private void OnBatchComplete(object? sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "Batch complete! Loading next set of words...",
-                "Info",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

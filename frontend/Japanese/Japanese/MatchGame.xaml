@@ -7,52 +7,50 @@
         <local:MatchGameViewModel x:Name="ViewModel"/>
     </Window.DataContext>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <!-- Message Display -->
+        <TextBlock Text="{Binding GameMessage}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Margin="0,10,0,0"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="DarkBlue"
+                   TextAlignment="Center" />
 
-        <Button Content="Back" HorizontalAlignment="Left" Margin="10" Click="BackButton_Click" />
+        <!-- Back Button -->
+        <Button Content="Back"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="10,10,0,0"
+                Width="75"
+                Click="BackButton_Click" />
 
-        <Grid Grid.Row="1" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <!-- Japanese Words -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,0,0,0">
+            <ItemsControl ItemsSource="{Binding CurrentJapanesePairs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Japanese}" 
+                                Uid="{Binding WordId}" 
+                                Click="JapaneseWordButton_Click" 
+                                Width="100" Height="50" Margin="5" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
 
-            <!-- Japanese Words -->
-            <StackPanel Grid.Column="0" Margin="10">
-                <ItemsControl ItemsSource="{Binding CurrentJapanesePairs}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button
-                                Content="{Binding Japanese}"
-                                Uid="{Binding Id}"
-                                Click="JapaneseWordButton_Click"
-                                Width="100"
-                                Height="50"
-                                HorizontalAlignment="Center" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-
-            <!-- Ukrainian Words -->
-            <StackPanel Grid.Column="1" Margin="10">
-                <ItemsControl ItemsSource="{Binding CurrentUkrainianPairs}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button
-                                Content="{Binding Ukrainian}"
-                                Uid="{Binding Id}"
-                                Click="TranslationButton_Click"
-                                Width="100"
-                                Height="50"
-                                HorizontalAlignment="Center" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </Grid>
+        <!-- Ukrainian Words -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,50,0">
+            <ItemsControl ItemsSource="{Binding CurrentUkrainianPairs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Ukrainian}" 
+                                Uid="{Binding WordId}" 
+                                Click="TranslationButton_Click" 
+                                Width="100" Height="50" Margin="5" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
     </Grid>
 </Window>
