@@ -19,14 +19,16 @@ namespace Japanese
         private readonly Random _random = new();
         private bool _isDataLoaded = false;
         private int _matchedPairsCount = 0; // Count of successfully matched pairs
-        private const int MaxMatches = 8; // Stop game after 20 matches
+        private int _currentBatchMatches = 0; // Matches in the current batch
+        private const int MaxMatches = 20; // Stop game after 20 matches
+        private const int BatchSize = 4; // Number of pairs in a batch
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MatchGameViewModel()
-        {
-            _ = LoadWordsAsync();
-        }
+        public event EventHandler? GameOver; // Event to notify when the game is over
+        public event EventHandler? BatchComplete; // Event to notify when a batch is completed
+
+        public MatchGameViewModel() => _ = LoadWordsAsync();
 
         /// <summary>
         /// Asynchronously loads word pairs from the backend into WordPairs.
@@ -74,18 +76,35 @@ namespace Japanese
         }
 
         /// <summary>
-        /// Loads the next batch of 4 random word pairs from WordPairs into CurrentWordPairs.
+        /// Handles a successful match by updating counters and checking if the game or batch is complete.
+        /// </summary>
+        public void HandleMatch()
+        {
+            _matchedPairsCount++;
+            _currentBatchMatches++;
+
+            if (_matchedPairsCount >= MaxMatches)
+            {
+                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI that the game is over
+                return;
+            }
+
+            if (_currentBatchMatches == BatchSize)
+            {
+                _currentBatchMatches = 0; // Reset batch counter
+                BatchComplete?.Invoke(this, EventArgs.Empty); // Notify the UI that the batch is complete
+                LoadNextBatch(); // Load the next batch
+            }
+        }
+
+        /// <summary>
+        /// Loads the next batch of random word pairs from WordPairs into CurrentWordPairs.
         /// </summary>
         public void LoadNextBatch()
         {
             if (_matchedPairsCount >= MaxMatches)
             {
-                MessageBox.Show(
-                    "Congratulations! You have matched all 40 pairs!",
-                    "Game Over",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
+                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI of game-over
                 return;
             }
 
@@ -94,8 +113,8 @@ namespace Japanese
                 CurrentJapanesePairs.Clear();
                 CurrentUkrainianPairs.Clear();
 
-                // Select 4 random pairs
-                var nextBatch = WordPairs.OrderBy(_ => _random.Next()).Take(4).ToList();
+                // Select BatchSize random pairs
+                var nextBatch = WordPairs.OrderBy(_ => _random.Next()).Take(BatchSize).ToList();
 
                 // Shuffle Japanese and Ukrainian pairs independently
                 foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))
@@ -114,12 +133,17 @@ namespace Japanese
         }
 
         /// <summary>
-        /// Tracks successful matches
+        /// Tracks successful matches and checks if the game is over.
         /// </summary>
-        public bool IsGameOver()
+        public bool CheckAndIncrementMatchCount()
         {
             _matchedPairsCount++;
-            return _matchedPairsCount >= MaxMatches;
+            if (_matchedPairsCount >= MaxMatches)
+            {
+                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

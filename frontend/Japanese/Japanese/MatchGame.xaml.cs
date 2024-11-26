@@ -11,14 +11,12 @@ namespace Japanese
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
 
-        //private readonly int currentBatchMatches = 0; // Number of matched pairs in the current batch
-        //private readonly int totalMatches = 0; // Total number of matches across all batches
-        //private const int MaxMatches = 40; // Stop the game after 40 matches
-
         public MatchGame()
         {
             InitializeComponent();
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
+            ViewModel.GameOver += OnGameOver; // Subscribe to GameOver event
+            ViewModel.BatchComplete += OnBatchComplete;
         }
 
         private void JapaneseWordButton_Click(object sender, RoutedEventArgs e)
@@ -37,44 +35,43 @@ namespace Japanese
         {
             if (selectedJapaneseButton != null && selectedTranslationButton != null)
             {
-                // Check if the UIDs of the selected buttons match
                 if (selectedJapaneseButton.Uid == selectedTranslationButton.Uid)
                 {
-                    MessageBox.Show("Правильно!");
+                    MessageBox.Show("Correct!");
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
 
-                    //currentBatchMatches++;
-                    //totalMatches++;
-
-                    //// Check if the current batch is completed
-                    //if (currentBatchMatches == 4)
-                    //{
-                    //    currentBatchMatches = 0;
-                    //    ViewModel.LoadNextBatch(); // Load the next set of 4 pairs
-                    //}
-
-                    // Check if the game is completed
-                    if (ViewModel.IsGameOver())
-                    {
-                        MessageBox.Show(
-                            "Congratulations! You have matched all 40 pairs!",
-                            "Game Over",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information
-                        );
-                        Close(); // Close the game window or restart logic
-                    }
+                    ViewModel.HandleMatch(); // Delegate match handling to the ViewModel
                 }
                 else
                 {
-                    MessageBox.Show("Неправильно, спробуйте знову.");
+                    MessageBox.Show("Incorrect, try again.");
                 }
 
-                // Reset the selected buttons
                 selectedJapaneseButton = null;
                 selectedTranslationButton = null;
             }
+        }
+
+        private void OnGameOver(object? sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Congratulations! You have matched all 20 pairs!",
+                "Game Over",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
+            Close();
+        }
+
+        private void OnBatchComplete(object? sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Batch complete! Loading next set of words...",
+                "Info",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
