@@ -22,7 +22,7 @@
 
             <!-- Japanese Words -->
             <StackPanel Grid.Column="0" Margin="10">
-                <ItemsControl ItemsSource="{Binding CurrentWordPairs}">
+                <ItemsControl ItemsSource="{Binding CurrentJapanesePairs}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button
@@ -39,7 +39,7 @@
 
             <!-- Ukrainian Words -->
             <StackPanel Grid.Column="1" Margin="10">
-                <ItemsControl ItemsSource="{Binding CurrentWordPairs}">
+                <ItemsControl ItemsSource="{Binding CurrentUkrainianPairs}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button

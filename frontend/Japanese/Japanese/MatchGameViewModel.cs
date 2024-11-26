@@ -9,7 +9,8 @@ namespace Japanese
     public class MatchGameViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<WordPair> WordPairs { get; private set; } = new();
-        public ObservableCollection<WordPair> CurrentWordPairs { get; private set; } = new();
+        public ObservableCollection<WordPair> CurrentJapanesePairs { get; private set; } = new();
+        public ObservableCollection<WordPair> CurrentUkrainianPairs { get; private set; } = new();
 
         private static readonly HttpClient HttpClient = new();
         private const string ApiUrlBase =
@@ -18,7 +19,7 @@ namespace Japanese
         private readonly Random _random = new();
         private bool _isDataLoaded = false;
         private int _matchedPairsCount = 0; // Count of successfully matched pairs
-        private const int MaxMatches = 40; // Stop game after 40 matches
+        private const int MaxMatches = 8; // Stop game after 20 matches
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -90,41 +91,35 @@ namespace Japanese
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                CurrentWordPairs.Clear();
-                var nextBatch = new List<WordPair>();
+                CurrentJapanesePairs.Clear();
+                CurrentUkrainianPairs.Clear();
 
-                // Select 4 random pairs with possible repetition
-                for (int i = 0; i < 4; i++)
+                // Select 4 random pairs
+                var nextBatch = WordPairs.OrderBy(_ => _random.Next()).Take(4).ToList();
+
+                // Shuffle Japanese and Ukrainian pairs independently
+                foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))
                 {
-                    var randomIndex = _random.Next(WordPairs.Count);
-                    var wordPair = WordPairs[randomIndex];
-                    nextBatch.Add(wordPair);
+                    CurrentJapanesePairs.Add(pair);
                 }
 
-                foreach (var pair in nextBatch)
+                foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))
                 {
-                    CurrentWordPairs.Add(pair);
+                    CurrentUkrainianPairs.Add(pair);
                 }
             });
 
-            OnPropertyChanged(nameof(CurrentWordPairs));
+            OnPropertyChanged(nameof(CurrentJapanesePairs));
+            OnPropertyChanged(nameof(CurrentUkrainianPairs));
         }
 
         /// <summary>
-        /// Tracks successful matches and stops the game after 40 matches.
+        /// Tracks successful matches
         /// </summary>
-        public void IncrementMatchCount()
+        public bool IsGameOver()
         {
             _matchedPairsCount++;
-            if (_matchedPairsCount >= MaxMatches)
-            {
-                MessageBox.Show(
-                    "You have matched all the required pairs! Well done!",
-                    "Game Over",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
-            }
+            return _matchedPairsCount >= MaxMatches;
         }
 
         /// <summary>

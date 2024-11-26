@@ -10,9 +10,10 @@ namespace Japanese
     {
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
-        private int currentBatchMatches = 0; // Number of matched pairs in the current batch
-        private int totalMatches = 0; // Total number of matches across all batches
-        private const int MaxMatches = 40; // Stop the game after 40 matches
+
+        //private readonly int currentBatchMatches = 0; // Number of matched pairs in the current batch
+        //private readonly int totalMatches = 0; // Total number of matches across all batches
+        //private const int MaxMatches = 40; // Stop the game after 40 matches
 
         public MatchGame()
         {
@@ -43,19 +44,18 @@ namespace Japanese
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
 
-                    currentBatchMatches++;
-                    totalMatches++;
-                    ViewModel.IncrementMatchCount();
+                    //currentBatchMatches++;
+                    //totalMatches++;
 
-                    // Check if the current batch is completed
-                    if (currentBatchMatches == 4)
-                    {
-                        currentBatchMatches = 0;
-                        ViewModel.LoadNextBatch(); // Load the next set of 4 pairs
-                    }
+                    //// Check if the current batch is completed
+                    //if (currentBatchMatches == 4)
+                    //{
+                    //    currentBatchMatches = 0;
+                    //    ViewModel.LoadNextBatch(); // Load the next set of 4 pairs
+                    //}
 
                     // Check if the game is completed
-                    if (totalMatches == MaxMatches)
+                    if (ViewModel.IsGameOver())
                     {
                         MessageBox.Show(
                             "Congratulations! You have matched all 40 pairs!",
