@@ -34,11 +34,12 @@ namespace Japanese
         private async void NextPage()
         {
             nextCount = 0;
-            ViewModel.IncrementPage();
-            await ViewModel.LoadWordsAsync();
+            //ViewModel.IncrementPage();
+            //await ViewModel.LoadWordsAsync();
             selectedJapaneseButton = null;
             selectedTranslationButton = null;
         }
+
         private void CheckForMatch()
         {
             if (selectedJapaneseButton != null && selectedTranslationButton != null)
@@ -52,7 +53,7 @@ namespace Japanese
                     selectedJapaneseButton.IsEnabled = false;
                     selectedTranslationButton.IsEnabled = false;
                     nextCount++;
-                    if(nextCount==4)
+                    if (nextCount == 4)
                     {
                         NextPage();
                     }
@@ -66,7 +67,6 @@ namespace Japanese
                 selectedTranslationButton = null;
             }
         }
-
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {

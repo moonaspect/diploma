@@ -14,7 +14,7 @@ namespace Japanese
         private static readonly HttpClient HttpClient = new HttpClient();
         private int currentPage = 1;
         private const string ApiUrlBase =
-            "https://khbczj8mb0.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=4&pageNumber=";
+            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=100&pageNumber=1";
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -39,8 +39,8 @@ namespace Japanese
         {
             try
             {
-                var apiUrlWithPage = $"{ApiUrlBase}{currentPage}";
-                var response = await HttpClient.GetAsync(apiUrlWithPage);
+                //var apiUrlWithPage = $"{ApiUrlBase}{currentPage}";
+                var response = await HttpClient.GetAsync(ApiUrlBase);
                 response.EnsureSuccessStatusCode();
 
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -87,7 +87,9 @@ namespace Japanese
     /// </summary>
     public class WordPair
     {
+        [System.Text.Json.Serialization.JsonIgnore]
         public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string? WordId { get; set; }
         public string? Japanese { get; set; }
         public string? Ukrainian { get; set; }
     }
@@ -98,6 +100,6 @@ namespace Japanese
     public class WordPairResponse
     {
         public int TotalItems { get; set; }
-        public WordPair[] Items { get; set; } = Array.Empty<WordPair>();
+        public List<WordPair> Items { get; set; } = new List<WordPair>();
     }
 }
