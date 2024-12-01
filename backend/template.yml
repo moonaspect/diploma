@@ -52,12 +52,21 @@ Resources:
           RECORDS_TABLE_NAME: !Ref GameRecordsTable
       Role: !GetAtt GameRecordsHandlerRole.Arn
 
-  GameRecordsHandlerInvokePermission:
+  GameRecordsHandlerInvokePermissionPost:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt GameRecordsHandler.Arn
       Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/POST/records
+
+  GameRecordsHandlerInvokePermissionGet:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt GameRecordsHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/GET/records
 
   GameRecordsHandlerRole:
     Type: AWS::IAM::Role

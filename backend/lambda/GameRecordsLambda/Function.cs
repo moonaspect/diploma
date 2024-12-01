@@ -67,7 +67,7 @@ namespace GameRecordsLambda
                         }
                     };
                 }
-                else if (httpMethod == "GET")
+                else
                 {
                     // Retrieve records with pagination
                     var pageNumber = request.QueryStringParameters.ContainsKey("pageNumber")
@@ -118,18 +118,6 @@ namespace GameRecordsLambda
                         Headers = new Dictionary<string, string>
                         {
                             { "Content-Type", "application/json" }
-                        }
-                    };
-                }
-                else
-                {
-                    return new APIGatewayProxyResponse
-                    {
-                        StatusCode = 405,
-                        Body = "Method not allowed.",
-                        Headers = new Dictionary<string, string>
-                        {
-                            { "Content-Type", "text/plain" }
                         }
                     };
                 }
