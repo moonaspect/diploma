@@ -9,8 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="back.svg" />
+    <None Remove="bg2.svg" />
+    <None Remove="bg3.svg" />
+    <None Remove="bgmain.svg" />
+    <None Remove="dictionary.svg" />
+    <None Remove="exit.svg" />
     <None Remove="Frame2.svg" />
+    <None Remove="hiragana.svg" />
+    <None Remove="katakana.svg" />
+    <None Remove="play.svg" />
+    <None Remove="stats.svg" />
     <None Remove="Variant2.svg" />
+    <None Remove="words.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,8 +30,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="back.svg" />
+    <Resource Include="bg2.svg" />
+    <Resource Include="bg3.svg" />
+    <Resource Include="bgmain.svg" />
+    <Resource Include="dictionary.svg" />
+    <Resource Include="exit.svg" />
     <Resource Include="Frame2.svg" />
+    <Resource Include="hiragana.svg" />
+    <Resource Include="katakana.svg" />
+    <Resource Include="play.svg" />
+    <Resource Include="stats.svg" />
     <Resource Include="Variant2.svg" />
+    <Resource Include="words.svg" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using SharpVectors.Converters;
 
@@ -14,90 +15,130 @@ namespace Japanese
         {
             InitializeComponent();
 
+
             // Create the main Grid
             Grid mainGrid = new Grid
             {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition { Width = new GridLength(200) },
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-                }
+                Background = Brushes.Transparent
             };
 
-            // Create the StackPanel for the first column
-            StackPanel stackPanel = new StackPanel
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // Background
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto}); // Bottom Buttons
+
+
+            SvgViewbox bgViewbox = new SvgViewbox
             {
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(10, 0, 0, 0)
+                Source = new Uri("pack://application:,,,/bgmain.svg"),
+                Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
 
-            // Add buttons to the StackPanel
-            Button buttonMatch = new Button { Content = "Гра на зіставлення", };
+            Grid.SetRow(bgViewbox, 0);
+            Grid.SetRowSpan(bgViewbox, 2);
+            mainGrid.Children.Add(bgViewbox);
+
+
+            SvgViewbox playViewbox = new SvgViewbox
+            {
+                Source = new Uri("pack://application:,,,/play.svg"),
+            };
+            SvgViewbox dictViewbox = new SvgViewbox
+            {
+                Source = new Uri("pack://application:,,,/dictionary.svg"),
+            };
+            SvgViewbox recViewbox = new SvgViewbox
+            {
+                Source = new Uri("pack://application:,,,/stats.svg"),
+            };
+            SvgViewbox closeViewbox = new SvgViewbox
+            {
+                Source = new Uri("pack://application:,,,/exit.svg"),
+            };
+
+
+            Button buttonMatch = CreateButton(playViewbox);
             buttonMatch.Click += ButtonMatch;
+            buttonMatch.Width = 165;
+            buttonMatch.Height = 78;
 
-            Button buttonDictionary = new Button { Content = "Словник" };
+            Button buttonDictionary = CreateButton(dictViewbox);
+            buttonDictionary.Width = 180;
+            buttonDictionary.Height = 43;
 
-            Button buttonRecords = new Button { Content = "Рекорди" };
+            Button buttonRecords = CreateButton(recViewbox);
             buttonRecords.Click += ButtonRecords;
+            buttonRecords.Width = 180;
+            buttonRecords.Height = 43;
 
-            stackPanel.Children.Add(buttonMatch);
-            stackPanel.Children.Add(buttonDictionary);
-            stackPanel.Children.Add(buttonRecords);
+            Button closeButton = CreateButton(closeViewbox);
+            closeButton.HorizontalAlignment = HorizontalAlignment.Right;
+            closeButton.VerticalAlignment = VerticalAlignment.Top;
+            closeButton.Width = 43;
+            closeButton.Height = 43;
+            closeButton.Click += (s, e) => this.Close();
+            closeButton.Margin = new Thickness(0, 10, 10, 0);
 
-            // Add the StackPanel to the first column of the Grid
-            Grid.SetColumn(stackPanel, 0);
-            mainGrid.Children.Add(stackPanel);
-
-            // Create the Button with SvgViewbox for the second column
-
-            SvgViewbox defaultViewbox = new SvgViewbox
+            Grid buttonGrid = new Grid
             {
-                Source = new Uri("pack://application:,,,/Frame2.svg"),
-                Stretch = System.Windows.Media.Stretch.Fill,
+                Background = Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Thickness(0, 10, 0, 10)
             };
 
-            SvgViewbox pressedViewbox = new SvgViewbox
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            buttonGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            Grid.SetColumn(buttonMatch, 0);
+            Grid.SetColumn(buttonDictionary, 1);
+            Grid.SetColumn(buttonRecords, 2);
+
+            buttonGrid.Children.Add(buttonMatch);
+            buttonGrid.Children.Add(buttonDictionary);
+            buttonGrid.Children.Add(buttonRecords);
+
+            Grid.SetRow(buttonGrid, 1);
+            mainGrid.Children.Add(buttonGrid);
+            mainGrid.Children.Add(closeButton);
+
+
+            this.Content = mainGrid;
+        }
+
+        private Button CreateButton(SvgViewbox content)
+        {
+            // Create the ControlTemplate
+            var template = new ControlTemplate(typeof(Button))
             {
-                Source = new Uri("pack://application:,,,/Variant2.svg"),
-                Stretch = System.Windows.Media.Stretch.Fill,
+                VisualTree = new FrameworkElementFactory(typeof(ContentPresenter)) // Display only the SVG content
             };
 
-            Button svgButton = new Button
+            // Add Trigger for Hover Effect (Change Cursor to Hand)
+            template.Triggers.Add(new Trigger
             {
-                Width = 150,
-                Height = 38,
+                Property = Button.IsMouseOverProperty, // Check if mouse is over the button
+                Value = true,
+                Setters =
+        {
+            new Setter(FrameworkElement.CursorProperty, Cursors.Hand) // Set cursor to hand
+        }
+            });
+
+            // Create and return the button
+            return new Button
+            {
+                Content = content,
                 Background = Brushes.Transparent,
                 BorderBrush = Brushes.Transparent,
-                Content = defaultViewbox,
+                Margin = new Thickness(10, 0, 10, 0),
+                Template = template
             };
-
-            
-
-            // Add SvgViewbox to the Button's content
-            svgButton.PreviewMouseDown += (sender, args) =>
-            {
-                svgButton.Content = pressedViewbox;
-            };
-
-            // Handle MouseUp to revert the content
-            svgButton.PreviewMouseUp += (sender, args) =>
-            {
-                svgButton.Content = defaultViewbox;
-            };
-
-            // Add the Button to the second column of the Grid
-            Grid.SetColumn(svgButton, 1);
-            mainGrid.Children.Add(svgButton);
-
-            // Set the Grid as the content of the Window
-            this.Content = mainGrid;
         }
 
         private void ButtonMatch(object sender, RoutedEventArgs e)
         {
-            MatchGame matchGame = new MatchGame();
-            matchGame.Show();
+            ChooseGame chooseGame = new ChooseGame();
+            chooseGame.Show();
             Close();
         }
 
@@ -107,5 +148,6 @@ namespace Japanese
             recordsTable.Show();
             Close();
         }
+
     }
 }

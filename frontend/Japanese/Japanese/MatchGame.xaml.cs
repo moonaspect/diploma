@@ -58,8 +58,8 @@ namespace Japanese
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow main = new MainWindow();
-            main.Show();
+            ChooseGame choose = new ChooseGame();
+            choose.Show();
             Close();
         }
     }
