@@ -18,13 +18,6 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref MatchingPairsTable
 
-  MatchingPairsHandlerInvokePermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt MatchingPairsHandler.Arn
-      Principal: apigateway.amazonaws.com
-
   # DynamoDB table for storing Ukrainian-Japanese word pairs
   MatchingPairsTable:
     Type: AWS::DynamoDB::Table
@@ -51,22 +44,6 @@ Resources:
         Variables:
           RECORDS_TABLE_NAME: !Ref GameRecordsTable
       Role: !GetAtt GameRecordsHandlerRole.Arn
-
-  GameRecordsHandlerInvokePermissionPost:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt GameRecordsHandler.Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/POST/records
-
-  GameRecordsHandlerInvokePermissionGet:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt GameRecordsHandler.Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/GET/records
 
   GameRecordsHandlerRole:
     Type: AWS::IAM::Role
@@ -251,7 +228,7 @@ Resources:
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
 
   # Permission for API Gateway to invoke Lambda
-  ApiGatewayInvokeLambdaPermission:
+  ApiGatewayInvokeMatchingPairsLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt MatchingPairsHandler.Arn
