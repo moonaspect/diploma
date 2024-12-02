@@ -13,23 +13,27 @@ namespace Japanese
         public RecordsTable()
         {
             InitializeComponent();
-            DataContext = new RecordsViewModel(); // Bind the ViewModel
+            DataContext = new RecordsViewModel();
 
             Grid mainGrid = new Grid();
+
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Title
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // DataGrid
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Buttons
 
             SvgViewbox bgViewbox = new SvgViewbox
             {
                 Source = new Uri("pack://application:,,,/bg3.svg"),
                 Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
-            Grid.SetRow(bgViewbox, 0);
+            Grid.SetRowSpan(bgViewbox, 3);
             mainGrid.Children.Add(bgViewbox);
 
             SvgViewbox closeViewbox = new SvgViewbox
             {
                 Source = new Uri("pack://application:,,,/exit.svg"),
             };
-Button closeButton = CreateButton(closeViewbox);
+            Button closeButton = CreateButton(closeViewbox);
             closeButton.HorizontalAlignment = HorizontalAlignment.Right;
             closeButton.VerticalAlignment = VerticalAlignment.Top;
             closeButton.Width = 43;
@@ -51,10 +55,6 @@ Button closeButton = CreateButton(closeViewbox);
 
             mainGrid.Children.Add(closeButton);
             mainGrid.Children.Add(backButton);
-
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Title
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // DataGrid
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Buttons
 
             var titleTextBlock = new TextBlock
             {

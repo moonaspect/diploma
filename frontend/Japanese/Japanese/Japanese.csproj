@@ -15,6 +15,7 @@
     <None Remove="bgmain.svg" />
     <None Remove="dictionary.svg" />
     <None Remove="exit.svg" />
+    <None Remove="face.svg" />
     <None Remove="Frame2.svg" />
     <None Remove="hiragana.svg" />
     <None Remove="katakana.svg" />
@@ -36,6 +37,7 @@
     <Resource Include="bgmain.svg" />
     <Resource Include="dictionary.svg" />
     <Resource Include="exit.svg" />
+    <Resource Include="face.svg" />
     <Resource Include="Frame2.svg" />
     <Resource Include="hiragana.svg" />
     <Resource Include="katakana.svg" />
