@@ -38,8 +38,6 @@ namespace Japanese
 
         public event EventHandler? GameOver; // Event to notify when the game is over
 
-        public MatchGameViewModel() => _ = LoadWordsAsync();
-
         /// <summary>
         /// Asynchronously loads word pairs from the backend into WordPairs.
         /// </summary>
