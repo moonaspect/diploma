@@ -1,0 +1,188 @@
+{
+    "hiragana_mappings": [
+        {
+            "character": "あ",
+            "ukrainian": "а"
+        },
+        {
+            "character": "い",
+            "ukrainian": "і"
+        },
+        {
+            "character": "う",
+            "ukrainian": "у"
+        },
+        {
+            "character": "え",
+            "ukrainian": "е"
+        },
+        {
+            "character": "お",
+            "ukrainian": "о"
+        },
+        {
+            "character": "か",
+            "ukrainian": "ка"
+        },
+        {
+            "character": "き",
+            "ukrainian": "кі"
+        },
+        {
+            "character": "く",
+            "ukrainian": "ку"
+        },
+        {
+            "character": "け",
+            "ukrainian": "ке"
+        },
+        {
+            "character": "こ",
+            "ukrainian": "ко"
+        },
+        {
+            "character": "さ",
+            "ukrainian": "са"
+        },
+        {
+            "character": "し",
+            "ukrainian": "сі"
+        },
+        {
+            "character": "す",
+            "ukrainian": "су"
+        },
+        {
+            "character": "せ",
+            "ukrainian": "се"
+        },
+        {
+            "character": "そ",
+            "ukrainian": "со"
+        },
+        {
+            "character": "た",
+            "ukrainian": "та"
+        },
+        {
+            "character": "ち",
+            "ukrainian": "ті"
+        },
+        {
+            "character": "つ",
+            "ukrainian": "цу"
+        },
+        {
+            "character": "て",
+            "ukrainian": "те"
+        },
+        {
+            "character": "と",
+            "ukrainian": "то"
+        },
+        {
+            "character": "な",
+            "ukrainian": "на"
+        },
+        {
+            "character": "に",
+            "ukrainian": "ні"
+        },
+        {
+            "character": "ぬ",
+            "ukrainian": "ну"
+        },
+        {
+            "character": "ね",
+            "ukrainian": "не"
+        },
+        {
+            "character": "の",
+            "ukrainian": "но"
+        },
+        {
+            "character": "は",
+            "ukrainian": "ха"
+        },
+        {
+            "character": "ひ",
+            "ukrainian": "хі"
+        },
+        {
+            "character": "ふ",
+            "ukrainian": "фу"
+        },
+        {
+            "character": "へ",
+            "ukrainian": "хе"
+        },
+        {
+            "character": "ほ",
+            "ukrainian": "хо"
+        },
+        {
+            "character": "ま",
+            "ukrainian": "ма"
+        },
+        {
+            "character": "み",
+            "ukrainian": "мі"
+        },
+        {
+            "character": "む",
+            "ukrainian": "му"
+        },
+        {
+            "character": "め",
+            "ukrainian": "ме"
+        },
+        {
+            "character": "も",
+            "ukrainian": "мо"
+        },
+        {
+            "character": "や",
+            "ukrainian": "я"
+        },
+        {
+            "character": "ゆ",
+            "ukrainian": "ю"
+        },
+        {
+            "character": "よ",
+            "ukrainian": "йо"
+        },
+        {
+            "character": "ら",
+            "ukrainian": "ра"
+        },
+        {
+            "character": "り",
+            "ukrainian": "рі"
+        },
+        {
+            "character": "る",
+            "ukrainian": "ру"
+        },
+        {
+            "character": "れ",
+            "ukrainian": "ре"
+        },
+        {
+            "character": "ろ",
+            "ukrainian": "ро"
+        },
+        {
+            "character": "わ",
+            "ukrainian": "ва"
+        },
+        {
+            "character": "を",
+            "ukrainian": "о"
+        },
+        {
+            "character": "ん",
+            "ukrainian": "н"
+        }
+    ]
+}
