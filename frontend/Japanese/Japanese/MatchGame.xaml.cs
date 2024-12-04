@@ -119,9 +119,10 @@ namespace Japanese
 
             buttonTemplate.VisualTree = gridFactory;
 
-            // Set up the Japanese template
+            // Japanese Template
             var japaneseTemplate = new DataTemplate();
             japaneseTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
+            japaneseTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate); // Apply custom style
             japaneseTemplate.VisualTree.SetBinding(Button.ContentProperty, new Binding("Japanese"));
             japaneseTemplate.VisualTree.SetBinding(Button.UidProperty, new Binding("WordId"));
             japaneseTemplate.VisualTree.SetValue(Button.WidthProperty, 150.0);
@@ -132,13 +133,14 @@ namespace Japanese
                 new RoutedEventHandler(JapaneseWordButton_Click)
             );
 
-            // Define the Ukrainian template
+            // Ukrainian Template
             var ukrainianTemplate = new DataTemplate();
             ukrainianTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
+            ukrainianTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate); // Apply custom style
             ukrainianTemplate.VisualTree.SetBinding(
                 Button.ContentProperty,
                 new Binding("Ukrainian")
-            ); // Explicitly bind to "Ukrainian"
+            );
             ukrainianTemplate.VisualTree.SetBinding(Button.UidProperty, new Binding("WordId"));
             ukrainianTemplate.VisualTree.SetValue(Button.WidthProperty, 150.0);
             ukrainianTemplate.VisualTree.SetValue(Button.HeightProperty, 55.0);
