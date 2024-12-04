@@ -104,7 +104,10 @@ namespace Japanese
 
             // Add a TextBlock for the button text
             var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding()); // Automatically binds to DataContext
+            textBlockFactory.SetValue(
+                TextBlock.TextProperty,
+                new TemplateBindingExtension(Button.ContentProperty)
+            ); // TemplateBinding to Button.Content
             textBlockFactory.SetValue(
                 TextBlock.HorizontalAlignmentProperty,
                 HorizontalAlignment.Center
@@ -113,7 +116,7 @@ namespace Japanese
                 TextBlock.VerticalAlignmentProperty,
                 VerticalAlignment.Center
             );
-            textBlockFactory.SetValue(TextBlock.ForegroundProperty, Brushes.White); // Example text color
+            textBlockFactory.SetValue(TextBlock.ForegroundProperty, Brushes.White);
             textBlockFactory.SetValue(TextBlock.FontSizeProperty, 16.0);
             gridFactory.AppendChild(textBlockFactory);
 
