@@ -1,10 +1,9 @@
 ﻿using System.Windows;
-using SharpVectors.Converters;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Data;
+using SharpVectors.Converters;
 
 namespace Japanese
 {
@@ -18,7 +17,9 @@ namespace Japanese
             Grid mainGrid = new Grid();
 
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Title
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // DataGrid
+            mainGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
+            ); // DataGrid
             mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Buttons
 
             SvgViewbox bgViewbox = new SvgViewbox
@@ -79,18 +80,22 @@ namespace Japanese
             Binding itemsSourceBinding = new Binding("GameRecords");
             dataGrid.SetBinding(DataGrid.ItemsSourceProperty, itemsSourceBinding);
 
-            dataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Player ID",
-                Binding = new Binding("PlayerId"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
-            dataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Score",
-                Binding = new Binding("Score"),
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star)
-            });
+            dataGrid.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Player ID",
+                    Binding = new Binding("PlayerId"),
+                    Width = new DataGridLength(1, DataGridLengthUnitType.Star)
+                }
+            );
+            dataGrid.Columns.Add(
+                new DataGridTextColumn
+                {
+                    Header = "Score",
+                    Binding = new Binding("Score"),
+                    Width = new DataGridLength(1, DataGridLengthUnitType.Star)
+                }
+            );
 
             mainGrid.Children.Add(dataGrid);
 
@@ -127,9 +132,20 @@ namespace Japanese
             stackPanel.Children.Add(addButton);
             mainGrid.Children.Add(stackPanel);
 
-
             this.Content = mainGrid;
+
+            this.Loaded += (sender, args) =>
+            {
+                if (
+                    DataContext is RecordsViewModel viewModel
+                    && viewModel.LoadRecordsCommand.CanExecute(null)
+                )
+                {
+                    viewModel.LoadRecordsCommand.Execute(null);
+                }
+            };
         }
+
         private Button CreateButton(SvgViewbox content)
         {
             var template = new ControlTemplate(typeof(Button))
@@ -137,15 +153,14 @@ namespace Japanese
                 VisualTree = new FrameworkElementFactory(typeof(ContentPresenter))
             };
 
-            template.Triggers.Add(new Trigger
-            {
-                Property = Button.IsMouseOverProperty,
-                Value = true,
-                Setters =
-        {
-            new Setter(FrameworkElement.CursorProperty, Cursors.Hand)
-        }
-            });
+            template.Triggers.Add(
+                new Trigger
+                {
+                    Property = Button.IsMouseOverProperty,
+                    Value = true,
+                    Setters = { new Setter(FrameworkElement.CursorProperty, Cursors.Hand) }
+                }
+            );
 
             return new Button
             {

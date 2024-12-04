@@ -13,13 +13,16 @@ namespace Japanese
             new ObservableCollection<GameRecord>();
 
         private static readonly HttpClient HttpClient = new HttpClient();
-        private const string ApiUrl =
+        private const string GetRecordsUrl =
             "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/records";
+        private const string SaveRecordsUrl =
+            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/birecords";
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         // Commands
         public ICommand LoadRecordsCommand { get; }
+
         public ICommand SaveRecordCommand { get; }
 
         public RecordsViewModel()
@@ -35,7 +38,7 @@ namespace Japanese
         {
             try
             {
-                var requestUrl = $"{ApiUrl}?pageNumber={pageNumber}&pageSize={pageSize}";
+                var requestUrl = $"{GetRecordsUrl}?pageNumber={pageNumber}&pageSize={pageSize}";
                 var response = await HttpClient.GetAsync(requestUrl);
                 response.EnsureSuccessStatusCode();
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -66,7 +69,7 @@ namespace Japanese
                 var jsonContent = JsonSerializer.Serialize(record);
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var response = await HttpClient.PostAsync(ApiUrl, httpContent);
+                var response = await HttpClient.PostAsync(GetRecordsUrl, httpContent);
                 response.EnsureSuccessStatusCode();
                 await LoadRecordsAsync(); // Reload the table after saving
             }
