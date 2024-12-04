@@ -89,57 +89,96 @@ namespace Japanese
             backButton.Margin = new Thickness(10, 10, 0, 0);
             mainGrid.Children.Add(backButton);
 
-            var japaneseStackPanel = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(50, 0, 0, 0)
-            };
-            var japaneseItemsControl = new ItemsControl();
-            var japaneseTemplate = new DataTemplate
-            {
-                VisualTree = new FrameworkElementFactory(typeof(Button))
-            };
+
+            // Define the Japanese template
+            var japaneseTemplate = new DataTemplate();
+
+            // Define the control template for buttons
+            var buttonTemplate = new ControlTemplate(typeof(Button));
+            var gridFactory = new FrameworkElementFactory(typeof(Grid));
+
+            // Add SvgViewbox as background
+            var backgroundFactory = new FrameworkElementFactory(typeof(SvgViewbox));
+            backgroundFactory.SetValue(SvgViewbox.SourceProperty, new Uri("pack://application:,,,/buttonbg.svg"));
+            backgroundFactory.SetValue(SvgViewbox.StretchProperty, Stretch.UniformToFill);
+            gridFactory.AppendChild(backgroundFactory);
+
+            // Add a TextBlock for the button text
+            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding()); // Automatically binds to DataContext
+            textBlockFactory.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            textBlockFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+            textBlockFactory.SetValue(TextBlock.ForegroundProperty, Brushes.White); // Example text color
+            textBlockFactory.SetValue(TextBlock.FontSizeProperty, 16.0);
+            gridFactory.AppendChild(textBlockFactory);
+
+            buttonTemplate.VisualTree = gridFactory;
+
+            // Set up the Japanese template
+            japaneseTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
+            japaneseTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate);
             japaneseTemplate.VisualTree.SetBinding(Button.ContentProperty, new Binding("Japanese"));
             japaneseTemplate.VisualTree.SetBinding(Button.UidProperty, new Binding("WordId"));
             japaneseTemplate.VisualTree.SetValue(Button.WidthProperty, 150.0);
             japaneseTemplate.VisualTree.SetValue(Button.HeightProperty, 55.0);
             japaneseTemplate.VisualTree.SetValue(Button.MarginProperty, new Thickness(5));
             japaneseTemplate.VisualTree.AddHandler(Button.ClickEvent, new RoutedEventHandler(JapaneseWordButton_Click));
-            japaneseItemsControl.ItemTemplate = japaneseTemplate;
-            japaneseItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("CurrentJapanesePairs"));
 
-            japaneseStackPanel.Children.Add(japaneseItemsControl);
-            mainGrid.Children.Add(japaneseStackPanel);
-
-            // Create StackPanel for Ukrainian Words
-            var ukrainianStackPanel = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 50, 0)
-            };
-
-            var ukrainianItemsControl = new ItemsControl();
-            var ukrainianTemplate = new DataTemplate
-            {
-                VisualTree = new FrameworkElementFactory(typeof(Button))
-            };
+            // Define the Ukrainian template (similar to Japanese)
+            var ukrainianTemplate = new DataTemplate();
+            ukrainianTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
+            ukrainianTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate);
             ukrainianTemplate.VisualTree.SetBinding(Button.ContentProperty, new Binding("Ukrainian"));
             ukrainianTemplate.VisualTree.SetBinding(Button.UidProperty, new Binding("WordId"));
             ukrainianTemplate.VisualTree.SetValue(Button.WidthProperty, 150.0);
             ukrainianTemplate.VisualTree.SetValue(Button.HeightProperty, 55.0);
             ukrainianTemplate.VisualTree.SetValue(Button.MarginProperty, new Thickness(5));
             ukrainianTemplate.VisualTree.AddHandler(Button.ClickEvent, new RoutedEventHandler(TranslationButton_Click));
-            ukrainianItemsControl.ItemTemplate = ukrainianTemplate;
-            ukrainianItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("CurrentUkrainianPairs"));
 
+
+
+
+            // Japanese StackPanel
+            var japaneseStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(100, 0, 0, 0)
+            };
+            Grid.SetRow(japaneseStackPanel, 0);
+
+            var japaneseItemsControl = new ItemsControl
+            {
+                ItemTemplate = japaneseTemplate
+            };
+            japaneseItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("CurrentJapanesePairs"));
+            japaneseStackPanel.Children.Add(japaneseItemsControl);
+            mainGrid.Children.Add(japaneseStackPanel);
+
+            // Ukrainian StackPanel
+            var ukrainianStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 100, 0)
+            };
+            Grid.SetRow(ukrainianStackPanel, 0);
+
+            var ukrainianItemsControl = new ItemsControl
+            {
+                ItemTemplate = ukrainianTemplate
+            };
+            ukrainianItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("CurrentUkrainianPairs"));
             ukrainianStackPanel.Children.Add(ukrainianItemsControl);
             mainGrid.Children.Add(ukrainianStackPanel);
 
+            // Ensure the DataContext is set
+            this.DataContext = ViewModel;
+
             this.Content = mainGrid;
+
 
         }
 
