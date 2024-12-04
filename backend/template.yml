@@ -31,20 +31,6 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  GameRecordsHandler:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: GameRecordsHandler
-      CodeUri: ./lambda/GameRecordsLambda/
-      Handler: GameRecordsLambda::GameRecordsLambda.Function::FunctionHandler
-      Runtime: dotnet8
-      MemorySize: 128
-      Timeout: 10
-      Environment:
-        Variables:
-          RECORDS_TABLE_NAME: !Ref GameRecordsTable
-      Role: !GetAtt GameRecordsHandlerRole.Arn
-
   GameRecordsHandlerRole:
     Type: AWS::IAM::Role
     Properties:
@@ -70,6 +56,57 @@ Resources:
                 Resource: !GetAtt GameRecordsTable.Arn
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  GameRecordsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GameRecordsHandler
+      CodeUri: ./lambda/GameRecordsLambda/
+      Handler: GameRecordsLambda::GameRecordsLambda.Function::FunctionHandler
+      Runtime: dotnet8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref GameRecordsTable
+      Role: !GetAtt GameRecordsHandlerRole.Arn
+
+  GetRecordsHandlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: GameRecordsDynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource: !GetAtt GameRecordsTable.Arn
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  GetRecordsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetRecordsHandler
+      CodeUri: ./lambda/GetRecordsLambda/
+      Handler: GetRecordsLambda::GetRecordsLambda.Function::GetRecordsHandler
+      Runtime: dotnet8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref GameRecordsTable
+      Role: !GetAtt GetRecordsHandlerRole.Arn
 
   # DynamoDB table for storing records
   GameRecordsTable:
@@ -97,6 +134,35 @@ Resources:
           description: API for Matching Pairs game
           version: '1.0'
         paths:
+          /records:
+            get:
+              summary: Get Records Lambda
+              parameters:
+                - name: pageNumber
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Page number for pagination (starts from 1)
+                - name: pageSize
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Number of items per page
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetRecordsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: Get records table
+                  content:
+                    text/plain:
+                      schema:
+                        type: string
           /words:
             get:
               summary: Retrieve paginated or random list of word pairs
@@ -146,7 +212,7 @@ Resources:
                           nextToken:
                             type: string
                             description: Token for the next page
-          /records:
+          /birecords:
             get:
               summary: Retrieve paginated game records
               parameters:
@@ -236,11 +302,23 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
 
+  ApiGatewayInvokeGetRecordsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GetRecordsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
 Outputs:
   MatchingPairsApi:
     Value: !Ref MatchingPairsApi
     Export:
       Name: MatchingPairsApiExport
-  DynamoDBTableName:
-    Description: Name of the DynamoDB table
+  PairsTableName:
+    Description: Name of the MatchingPairs table
     Value: !Ref MatchingPairsTable
+  RecordsTableName:
+    Description: Name of the GameRecords table
+    Value: !Ref GameRecordsTable
+
