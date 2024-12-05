@@ -7,17 +7,18 @@ using SharpVectors.Converters;
 
 namespace Japanese
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    
     public partial class MatchGame : Window
     {
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
-
+        private int mistakes = 0;
+        public RecordsViewModel RecordsViewModel { get; set; }
         public MatchGame()
         {
             InitializeComponent();
+            RecordsViewModel = new RecordsViewModel();
+
             Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
             ViewModel.GameOver += OnGameOver; // Subscribe to GameOver event
 
@@ -95,6 +96,7 @@ namespace Japanese
 
             // Add SvgViewbox as background
             var backgroundFactory = new FrameworkElementFactory(typeof(SvgViewbox));
+            backgroundFactory.Name = "BackgroundViewbox";
             backgroundFactory.SetValue(
                 SvgViewbox.SourceProperty,
                 new Uri("pack://application:,,,/buttonbg.svg")
@@ -122,10 +124,35 @@ namespace Japanese
 
             buttonTemplate.VisualTree = gridFactory;
 
+            var trigger = new Trigger
+            {
+                Property = Button.IsEnabledProperty,
+                Value = false // Trigger when the button is disabled
+            };
+            trigger.Setters.Add(new Setter
+            {
+                Property = SvgViewbox.SourceProperty,
+                TargetName = "BackgroundViewbox", // Target the SvgViewbox
+                Value = new Uri("pack://application:,,,/buttonbg_disabled.svg") // Set to disabled background
+            });
+            buttonTemplate.Triggers.Add(trigger);
+
+            var hoverTrigger = new Trigger
+            {
+                Property = Button.IsMouseOverProperty,
+                Value = true // Trigger when the mouse is over the button
+            };
+            hoverTrigger.Setters.Add(new Setter
+            {
+                Property = FrameworkElement.CursorProperty, // Change the cursor
+                Value = Cursors.Hand
+            });
+            buttonTemplate.Triggers.Add(hoverTrigger);
+
             // Japanese Template
             var japaneseTemplate = new DataTemplate();
             japaneseTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
-            japaneseTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate); // Apply custom style
+            japaneseTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate);
             japaneseTemplate.VisualTree.SetBinding(Button.ContentProperty, new Binding("Japanese"));
             japaneseTemplate.VisualTree.SetBinding(Button.UidProperty, new Binding("WordId"));
             japaneseTemplate.VisualTree.SetValue(Button.WidthProperty, 150.0);
@@ -139,7 +166,7 @@ namespace Japanese
             // Ukrainian Template
             var ukrainianTemplate = new DataTemplate();
             ukrainianTemplate.VisualTree = new FrameworkElementFactory(typeof(Button));
-            ukrainianTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate); // Apply custom style
+            ukrainianTemplate.VisualTree.SetValue(Button.TemplateProperty, buttonTemplate);
             ukrainianTemplate.VisualTree.SetBinding(
                 Button.ContentProperty,
                 new Binding("Ukrainian")
@@ -258,7 +285,8 @@ namespace Japanese
                 }
                 else
                 {
-                    ViewModel.HandleMismatch(); // Notify ViewModel of a mismatch
+                    ViewModel.HandleMismatch();
+                    mistakes++;
                 }
 
                 selectedJapaneseButton = null;
@@ -266,9 +294,19 @@ namespace Japanese
             }
         }
 
-        private void OnGameOver(object? sender, EventArgs e)
+        private async void OnGameOver(object? sender, EventArgs e)
         {
-            // Optionally handle additional logic if needed during game over.
+            var record = new GameRecord
+            {
+                PlayerId = "Player1",
+                Score = 1000-100*mistakes,
+            };
+            if (record.Score < 0)
+                record.Score = 0;
+            await RecordsViewModel.SaveRecordAsync(record);
+
+            RecordsTable rec = new RecordsTable();
+            rec.Show();
             Close();
         }
 

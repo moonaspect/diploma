@@ -14,6 +14,7 @@
     <None Remove="bg3.svg" />
     <None Remove="bgmain.svg" />
     <None Remove="buttonbg.svg" />
+    <None Remove="buttonbg_disabled.svg" />
     <None Remove="dictionary.svg" />
     <None Remove="exit.svg" />
     <None Remove="face.svg" />
@@ -37,6 +38,7 @@
     <Resource Include="bg3.svg" />
     <Resource Include="bgmain.svg" />
     <Resource Include="buttonbg.svg" />
+    <Resource Include="buttonbg_disabled.svg" />
     <Resource Include="dictionary.svg" />
     <Resource Include="exit.svg" />
     <Resource Include="face.svg" />
