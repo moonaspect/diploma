@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Japanese
@@ -29,9 +30,10 @@ namespace Japanese
         {
             // Initialize Commands
             LoadRecordsCommand = new RelayCommand(async _ => await LoadRecordsAsync());
-            SaveRecordCommand = new RelayCommand(async _ =>
-                await SaveRecordAsync(new GameRecord { PlayerId = "NewPlayer", Score = 100 })
-            );
+            SaveRecordCommand = new RelayCommand(async _ => await SaveRecordWithDialogAsync());
+            //SaveRecordCommand = new RelayCommand(async _ =>
+            //    await SaveRecordAsync(new GameRecord { PlayerId = "OneMorePlayer", Score = 300 })
+            //);
         }
 
         public async Task LoadRecordsAsync(int pageNumber = 1, int pageSize = 10)
@@ -62,6 +64,47 @@ namespace Japanese
             }
         }
 
+        private async Task SaveRecordWithDialogAsync()
+        {
+            try
+            {
+                // Show input dialogs to get player name and score
+                var playerName = PromptForInput("Enter Player Name", "Save Record");
+                if (string.IsNullOrEmpty(playerName))
+                    return;
+
+                var scoreString = PromptForInput("Enter Score", "Save Record");
+                if (!int.TryParse(scoreString, out int score))
+                {
+                    MessageBox.Show(
+                        "Invalid score entered.",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+                    return;
+                }
+
+                var record = new GameRecord { PlayerId = playerName, Score = score };
+
+                await SaveRecordAsync(record);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error: {ex.Message}",
+                    "Save Record Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        private string? PromptForInput(string message, string title)
+        {
+            return Microsoft.VisualBasic.Interaction.InputBox(message, title, string.Empty);
+        }
+
         public async Task SaveRecordAsync(GameRecord record)
         {
             try
@@ -69,7 +112,7 @@ namespace Japanese
                 var jsonContent = JsonSerializer.Serialize(record);
                 var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var response = await HttpClient.PostAsync(GetRecordsUrl, httpContent);
+                var response = await HttpClient.PostAsync(SaveRecordsUrl, httpContent);
                 response.EnsureSuccessStatusCode();
                 await LoadRecordsAsync(); // Reload the table after saving
             }
