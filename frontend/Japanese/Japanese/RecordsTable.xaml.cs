@@ -24,7 +24,7 @@ namespace Japanese
 
             SvgViewbox bgViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/bg3.svg"),
+                Source = new Uri("pack://application:,,,./Resources/bg3.svg"),
                 Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
             Grid.SetRowSpan(bgViewbox, 3);
@@ -32,7 +32,7 @@ namespace Japanese
 
             SvgViewbox closeViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/exit.svg"),
+                Source = new Uri("pack://application:,,,./Resources/exit.svg"),
             };
             Button closeButton = CreateButton(closeViewbox);
             closeButton.HorizontalAlignment = HorizontalAlignment.Right;
@@ -44,7 +44,7 @@ namespace Japanese
 
             SvgViewbox backViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/back.svg"),
+                Source = new Uri("pack://application:,,,./Resources/back.svg"),
             };
             Button backButton = CreateButton(backViewbox);
             backButton.HorizontalAlignment = HorizontalAlignment.Left;

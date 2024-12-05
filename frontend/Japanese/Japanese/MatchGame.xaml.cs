@@ -7,13 +7,13 @@ using SharpVectors.Converters;
 
 namespace Japanese
 {
-    
     public partial class MatchGame : Window
     {
         private Button? selectedJapaneseButton;
         private Button? selectedTranslationButton;
         private int mistakes = 0;
         public RecordsViewModel RecordsViewModel { get; set; }
+
         public MatchGame()
         {
             InitializeComponent();
@@ -31,7 +31,7 @@ namespace Japanese
 
             SvgViewbox bgViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/bg3.svg"),
+                Source = new Uri("pack://application:,,,./Resources/bg3.svg"),
                 Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
 
@@ -55,7 +55,7 @@ namespace Japanese
 
             SvgViewbox faceViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/face.svg"),
+                Source = new Uri("pack://application:,,,./Resources/face.svg"),
             };
             faceViewbox.Width = 92;
             faceViewbox.Height = 66;
@@ -66,7 +66,7 @@ namespace Japanese
 
             SvgViewbox closeViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/exit.svg"),
+                Source = new Uri("pack://application:,,,./Resources/exit.svg"),
             };
             Button closeButton = CreateButton(closeViewbox);
             closeButton.HorizontalAlignment = HorizontalAlignment.Right;
@@ -79,7 +79,7 @@ namespace Japanese
 
             SvgViewbox backViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/back.svg"),
+                Source = new Uri("pack://application:,,,./Resources/back.svg"),
             };
             Button backButton = CreateButton(backViewbox);
             backButton.HorizontalAlignment = HorizontalAlignment.Left;
@@ -99,7 +99,7 @@ namespace Japanese
             backgroundFactory.Name = "BackgroundViewbox";
             backgroundFactory.SetValue(
                 SvgViewbox.SourceProperty,
-                new Uri("pack://application:,,,/buttonbg.svg")
+                new Uri("pack://application:,,,./Resources/buttonbg.svg")
             );
             backgroundFactory.SetValue(SvgViewbox.StretchProperty, Stretch.UniformToFill);
             gridFactory.AppendChild(backgroundFactory);
@@ -129,12 +129,14 @@ namespace Japanese
                 Property = Button.IsEnabledProperty,
                 Value = false // Trigger when the button is disabled
             };
-            trigger.Setters.Add(new Setter
-            {
-                Property = SvgViewbox.SourceProperty,
-                TargetName = "BackgroundViewbox", // Target the SvgViewbox
-                Value = new Uri("pack://application:,,,/buttonbg_disabled.svg") // Set to disabled background
-            });
+            trigger.Setters.Add(
+                new Setter
+                {
+                    Property = SvgViewbox.SourceProperty,
+                    TargetName = "BackgroundViewbox", // Target the SvgViewbox
+                    Value = new Uri("pack://application:,,,./Resources/buttonbg_disabled.svg") // Set to disabled background
+                }
+            );
             buttonTemplate.Triggers.Add(trigger);
 
             var hoverTrigger = new Trigger
@@ -142,11 +144,13 @@ namespace Japanese
                 Property = Button.IsMouseOverProperty,
                 Value = true // Trigger when the mouse is over the button
             };
-            hoverTrigger.Setters.Add(new Setter
-            {
-                Property = FrameworkElement.CursorProperty, // Change the cursor
-                Value = Cursors.Hand
-            });
+            hoverTrigger.Setters.Add(
+                new Setter
+                {
+                    Property = FrameworkElement.CursorProperty, // Change the cursor
+                    Value = Cursors.Hand
+                }
+            );
             buttonTemplate.Triggers.Add(hoverTrigger);
 
             // Japanese Template
@@ -296,11 +300,7 @@ namespace Japanese
 
         private async void OnGameOver(object? sender, EventArgs e)
         {
-            var record = new GameRecord
-            {
-                PlayerId = "Player1",
-                Score = 1000-100*mistakes,
-            };
+            var record = new GameRecord { PlayerId = "Player1", Score = 1000 - 100 * mistakes, };
             if (record.Score < 0)
                 record.Score = 0;
             await RecordsViewModel.SaveRecordAsync(record);

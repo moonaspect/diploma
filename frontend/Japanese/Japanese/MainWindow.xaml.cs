@@ -15,20 +15,17 @@ namespace Japanese
         {
             InitializeComponent();
 
-
             // Create the main Grid
-            Grid mainGrid = new Grid
-            {
-                Background = Brushes.Transparent
-            };
+            Grid mainGrid = new Grid { Background = Brushes.Transparent };
 
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // Background
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto}); // Bottom Buttons
-
+            mainGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
+            ); // Background
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Bottom Buttons
 
             SvgViewbox bgViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/bgmain.svg"),
+                Source = new Uri("pack://application:,,,./Resources/bgmain.svg"),
                 Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
 
@@ -36,24 +33,22 @@ namespace Japanese
             Grid.SetRowSpan(bgViewbox, 2);
             mainGrid.Children.Add(bgViewbox);
 
-
             SvgViewbox playViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/play.svg"),
+                Source = new Uri("pack://application:,,,./Resources/play.svg"),
             };
             SvgViewbox dictViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/dictionary.svg"),
+                Source = new Uri("pack://application:,,,./Resources/dictionary.svg"),
             };
             SvgViewbox recViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/stats.svg"),
+                Source = new Uri("pack://application:,,,./Resources/stats.svg"),
             };
             SvgViewbox closeViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/exit.svg"),
+                Source = new Uri("pack://application:,,,./Resources/exit.svg"),
             };
-
 
             Button buttonMatch = CreateButton(playViewbox);
             buttonMatch.Click += ButtonMatch;
@@ -101,7 +96,6 @@ namespace Japanese
             mainGrid.Children.Add(buttonGrid);
             mainGrid.Children.Add(closeButton);
 
-
             this.Content = mainGrid;
         }
 
@@ -114,15 +108,17 @@ namespace Japanese
             };
 
             // Add Trigger for Hover Effect (Change Cursor to Hand)
-            template.Triggers.Add(new Trigger
-            {
-                Property = Button.IsMouseOverProperty, // Check if mouse is over the button
-                Value = true,
-                Setters =
-        {
-            new Setter(FrameworkElement.CursorProperty, Cursors.Hand) // Set cursor to hand
-        }
-            });
+            template.Triggers.Add(
+                new Trigger
+                {
+                    Property = Button.IsMouseOverProperty, // Check if mouse is over the button
+                    Value = true,
+                    Setters =
+                    {
+                        new Setter(FrameworkElement.CursorProperty, Cursors.Hand) // Set cursor to hand
+                    }
+                }
+            );
 
             // Create and return the button
             return new Button
@@ -148,6 +144,5 @@ namespace Japanese
             recordsTable.Show();
             Close();
         }
-
     }
 }

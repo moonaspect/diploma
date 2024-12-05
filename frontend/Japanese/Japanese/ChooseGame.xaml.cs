@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using SharpVectors.Converters;
 
 namespace Japanese
@@ -26,38 +17,40 @@ namespace Japanese
             Grid mainGrid = new Grid();
             SvgViewbox bgViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/bg2.svg"),
+                Source = new Uri("pack://application:,,,./Resources/bg2.svg"),
                 Stretch = System.Windows.Media.Stretch.UniformToFill,
             };
 
             Grid.SetRow(bgViewbox, 0);
             mainGrid.Children.Add(bgViewbox);
 
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // Background
+            mainGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
+            ); // Background
 
             SvgViewbox wordsViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/words.svg"),
+                Source = new Uri("pack://application:,,,./Resources/words.svg"),
             };
 
             SvgViewbox hiraganaViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/hiragana.svg"),
+                Source = new Uri("pack://application:,,,./Resources/hiragana.svg"),
             };
 
             SvgViewbox katakanaViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/katakana.svg"),
+                Source = new Uri("pack://application:,,,./Resources/katakana.svg"),
             };
 
             SvgViewbox closeViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/exit.svg"),
+                Source = new Uri("pack://application:,,,./Resources/exit.svg"),
             };
 
             SvgViewbox backViewbox = new SvgViewbox
             {
-                Source = new Uri("pack://application:,,,/back.svg"),
+                Source = new Uri("pack://application:,,,./Resources/back.svg"),
             };
 
             Button closeButton = CreateButton(closeViewbox);
@@ -97,11 +90,17 @@ namespace Japanese
                 Margin = new Thickness(0, 10, 0, 10)
             };
 
-            buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            buttonGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) }
+            );
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(10) });
-            buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            buttonGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) }
+            );
             buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(10) });
-            buttonGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            buttonGrid.RowDefinitions.Add(
+                new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) }
+            );
 
             buttonGrid.Children.Add(buttonHiragana);
             buttonGrid.Children.Add(buttonKatakana);
@@ -117,18 +116,21 @@ namespace Japanese
 
             this.Content = mainGrid;
         }
+
         private void ButtonMatch(object sender, RoutedEventArgs e)
         {
             MatchGame matchGame = new MatchGame();
             matchGame.Show();
             Close();
         }
+
         private void ButtonBack(object sender, RoutedEventArgs e)
         {
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             Close();
         }
+
         private Button CreateButton(SvgViewbox content)
         {
             var template = new ControlTemplate(typeof(Button))
@@ -136,15 +138,14 @@ namespace Japanese
                 VisualTree = new FrameworkElementFactory(typeof(ContentPresenter))
             };
 
-            template.Triggers.Add(new Trigger
-            {
-                Property = Button.IsMouseOverProperty,
-                Value = true,
-                Setters =
-        {
-            new Setter(FrameworkElement.CursorProperty, Cursors.Hand)
-        }
-            });
+            template.Triggers.Add(
+                new Trigger
+                {
+                    Property = Button.IsMouseOverProperty,
+                    Value = true,
+                    Setters = { new Setter(FrameworkElement.CursorProperty, Cursors.Hand) }
+                }
+            );
 
             return new Button
             {
@@ -155,7 +156,5 @@ namespace Japanese
                 Margin = new Thickness(10, 0, 10, 0) // Add horizontal spacing
             };
         }
-
     }
-
 }
