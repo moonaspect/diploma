@@ -1,0 +1,126 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  ApiGatewayInvokeGameRecordsLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: GameRecordsHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayInvokeGetRecordsLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: GetRecordsHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayInvokeMatchingPairsLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: MatchingPairsHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayInvokeHiraganaLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: HiraganaHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayInvokeKatakanaLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: KatakanaHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+  ApiGatewayInvokeDictionaryLambdaPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: DictionaryHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+    Type: AWS::Lambda::Permission
+
+  GameRecordsHandler:
+    Properties:
+      CodeUri: ./lambda/GameRecordsLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: GameRecordsTable
+      FunctionName: GameRecordsHandler
+      Handler: GameRecordsLambda::GameRecordsLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: GameRecordsHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+  GetRecordsHandler:
+    Properties:
+      CodeUri: ./lambda/GetRecordsLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: GameRecordsTable
+      FunctionName: GetRecordsHandler
+      Handler: GetRecordsLambda::GetRecordsLambda.Function::GetRecordsHandler
+      MemorySize: 128
+      Role: GetRecordsHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+  MatchingPairsHandler:
+    Properties:
+      CodeUri: ./lambda/MatchingPairsLambda/
+      Environment:
+        Variables:
+          TABLE_NAME: MatchingPairsTable
+      FunctionName: MatchingPairsHandler
+      Handler: MatchingPairsLambda::MatchingPairsLambda.Function::FunctionHandler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: MatchingPairsTable
+      Runtime: dotnet8
+      Timeout: 15
+    Type: AWS::Serverless::Function
+
+  HiraganaHandler:
+    Properties:
+      CodeUri: ./lambda/HiraganaLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: HiraganaRecordsTable
+      FunctionName: HiraganaHandler
+      Handler: HiraganaLambda::HiraganaLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: HiraganaHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+  KatakanaHandler:
+    Properties:
+      CodeUri: ./lambda/KatakanaLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: KatakanaRecordsTable
+      FunctionName: KatakanaHandler
+      Handler: KatakanaLambda::KatakanaLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: KatakanaHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+  DictionaryHandler:
+    Properties:
+      CodeUri: ./lambda/DictionaryLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: DictionaryRecordsTable
+      FunctionName: DictionaryHandler
+      Handler: DictionaryLambda::DictionaryLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: DictionaryHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+

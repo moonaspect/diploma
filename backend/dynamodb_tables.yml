@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  GameRecordsTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: PlayerId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: PlayerId
+        KeyType: HASH
+      TableName: GameRecordsTable
+    Type: AWS::DynamoDB::Table
+  MatchingPairsTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: MatchingPairsTable
+    Type: AWS::DynamoDB::Table
+  HiraganaTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: HiraganaTable
+    Type: AWS::DynamoDB::Table
+  KatakanaTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: KatakanaTable
+    Type: AWS::DynamoDB::Table
+  DictionaryTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: DictionaryTable
+    Type: AWS::DynamoDB::Table
+            

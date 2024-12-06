@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  GameRecordsHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: GameRecordsTable.Arn
+          Version: '2012-10-17'
+        PolicyName: GameRecordsDynamoDBAccess
+    Type: AWS::IAM::Role
+  GetRecordsHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: GameRecordsTable.Arn
+          Version: '2012-10-17'
+        PolicyName: GetRecordsDynamoDBAccess
+    Type: AWS::IAM::Role
+  HiraganaHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: HiraganaTable.Arn
+          Version: '2012-10-17'
+        PolicyName: HiraganaDynamoDBAccess
+    Type: AWS::IAM::Role
+  KatakanaHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: KatakanaTable.Arn
+          Version: '2012-10-17'
+        PolicyName: KatakanaDynamoDBAccess
+    Type: AWS::IAM::Role
+  DictionaryHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: DictionaryTable.Arn
+          Version: '2012-10-17'
+        PolicyName: DictionaryDynamoDBAccess
+    Type: AWS::IAM::Role
