@@ -205,7 +205,7 @@ Resources:
       CodeUri: ./lambda/HiraganaLambda/
       Environment:
         Variables:
-          RECORDS_TABLE_NAME: HiraganaTable
+          HIRAGANA_TABLE_NAME: HiraganaTable
       FunctionName: HiraganaHandler
       Handler: HiraganaLambda::HiraganaLambda.Function::FunctionHandler
       MemorySize: 128
@@ -219,7 +219,7 @@ Resources:
       CodeUri: ./lambda/KatakanaLambda/
       Environment:
         Variables:
-          RECORDS_TABLE_NAME: KatakanaTable
+          KATAKANA_TABLE_NAME: KatakanaTable
       FunctionName: KatakanaHandler
       Handler: KatakanaLambda::KatakanaLambda.Function::FunctionHandler
       MemorySize: 128
@@ -239,7 +239,7 @@ Resources:
       Timeout: 10
       Environment:
         Variables:
-          RECORDS_TABLE_NAME: !Ref DictionaryTable
+          DICTIONARY_TABLE_NAME: !Ref DictionaryTable
       Role: !GetAtt DictionaryHandlerRole.Arn
 
   # DynamoDB table for storing Ukrainian-Japanese word pairs

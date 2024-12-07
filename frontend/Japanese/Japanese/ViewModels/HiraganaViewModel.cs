@@ -2,41 +2,20 @@
 using System.ComponentModel;
 using System.Net.Http;
 using System.Text.Json;
-using System.Windows;
 
 namespace Japanese.ViewModels
 {
-    public class MatchGameViewModel : INotifyPropertyChanged
+    public class HiraganaViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<WordPair> WordPairs { get; private set; } = new();
-        public ObservableCollection<WordPair> CurrentJapanesePairs { get; private set; } = new();
-        public ObservableCollection<WordPair> CurrentUkrainianPairs { get; private set; } = new();
+        public ObservableCollection<WordPair> HiraganaPairs { get; private set; } = new();
 
         private static readonly HttpClient HttpClient = new();
         private const string ApiUrlBase =
-            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=100&pageNumber=1";
+            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/hiragana";
 
-        private readonly Random _random = new();
         private bool _isDataLoaded = false;
-        private int _matchedPairsCount = 0; // Count of successfully matched pairs
-        private int _currentBatchMatches = 0; // Matches in the current batch
-        private const int MaxMatches = 20; // Stop game after 20 matches
-        private const int BatchSize = 4; // Number of pairs in a batch
-
-        private string _gameMessage = "Match the words!"; // Default game message
-        public string GameMessage
-        {
-            get => _gameMessage;
-            set
-            {
-                _gameMessage = value;
-                OnPropertyChanged(nameof(GameMessage));
-            }
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public event EventHandler? GameOver; // Event to notify when the game is over
 
         /// <summary>
         /// Asynchronously loads word pairs from the backend into WordPairs.
@@ -61,10 +40,10 @@ namespace Japanese.ViewModels
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        WordPairs.Clear();
+                        HiraganaPairs.Clear();
                         foreach (var pair in wordPairsResponse.Items)
                         {
-                            WordPairs.Add(pair);
+                            HiraganaPairs.Add(pair);
                         }
                     });
 
@@ -131,7 +110,7 @@ namespace Japanese.ViewModels
                 CurrentUkrainianPairs.Clear();
 
                 // Select BatchSize random pairs
-                var nextBatch = WordPairs.OrderBy(_ => _random.Next()).Take(BatchSize).ToList();
+                var nextBatch = HiraganaPairs.OrderBy(_ => _random.Next()).Take(BatchSize).ToList();
 
                 // Shuffle Japanese and Ukrainian pairs independently
                 foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))

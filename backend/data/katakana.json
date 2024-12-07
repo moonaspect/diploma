@@ -1,0 +1,357 @@
+﻿[
+    {
+        "WordId":  "49fb74a3-2ef8-488c-8dd6-8d64f14fc4b3",
+        "Japanese":  "ア",
+        "Ukrainian":  "а"
+    },
+    {
+        "WordId":  "21a57716-95c7-4607-8f9c-620370e1f8f6",
+        "Japanese":  "イ",
+        "Ukrainian":  "і"
+    },
+    {
+        "WordId":  "4532d293-a329-4c56-bc0c-31d7a5eed882",
+        "Japanese":  "ウ",
+        "Ukrainian":  "у"
+    },
+    {
+        "WordId":  "df17794c-818d-42f2-a1e1-4016c35350e4",
+        "Japanese":  "エ",
+        "Ukrainian":  "е"
+    },
+    {
+        "WordId":  "cde6ddc5-9b8f-4fbd-b3e5-bb1b2ada012a",
+        "Japanese":  "オ",
+        "Ukrainian":  "о"
+    },
+    {
+        "WordId":  "d68415ac-6a34-42d1-84ba-0b6a6125a358",
+        "Japanese":  "カ",
+        "Ukrainian":  "ка"
+    },
+    {
+        "WordId":  "40ca4df9-d330-460b-bc30-f758feb43a54",
+        "Japanese":  "キ",
+        "Ukrainian":  "кі"
+    },
+    {
+        "WordId":  "42a0a9ac-ab4d-40e3-8c6f-b84aced88650",
+        "Japanese":  "ク",
+        "Ukrainian":  "ку"
+    },
+    {
+        "WordId":  "e2c89927-4547-4142-99c9-d90f73236924",
+        "Japanese":  "ケ",
+        "Ukrainian":  "ке"
+    },
+    {
+        "WordId":  "920a70f9-9e35-4fb7-a8be-13ddfd8af49e",
+        "Japanese":  "コ",
+        "Ukrainian":  "ко"
+    },
+    {
+        "WordId":  "f9344e1f-1656-4bc0-b486-bf0305e5b341",
+        "Japanese":  "サ",
+        "Ukrainian":  "са"
+    },
+    {
+        "WordId":  "dbfa07ec-4a07-4f2a-8db5-8d8992a20f68",
+        "Japanese":  "シ",
+        "Ukrainian":  "ші"
+    },
+    {
+        "WordId":  "335c331b-1a32-4e1e-b4d2-7d3de9b736e8",
+        "Japanese":  "ス",
+        "Ukrainian":  "су"
+    },
+    {
+        "WordId":  "603bd8a9-c080-4ab7-94c0-4e81893631fc",
+        "Japanese":  "セ",
+        "Ukrainian":  "се"
+    },
+    {
+        "WordId":  "0079fcfe-15b7-42a7-a28c-2f8bf16b2d58",
+        "Japanese":  "ソ",
+        "Ukrainian":  "со"
+    },
+    {
+        "WordId":  "875e34ec-7d08-4211-9a8b-4d5de87e0da2",
+        "Japanese":  "タ",
+        "Ukrainian":  "та"
+    },
+    {
+        "WordId":  "6a330bec-c90e-4f90-80b4-ea01ad36a24f",
+        "Japanese":  "チ",
+        "Ukrainian":  "чі"
+    },
+    {
+        "WordId":  "2095f083-fd84-482c-a684-6d3e5a842ddb",
+        "Japanese":  "ツ",
+        "Ukrainian":  "цу"
+    },
+    {
+        "WordId":  "e5a364df-b15a-48e6-88c9-7db46f8c636b",
+        "Japanese":  "テ",
+        "Ukrainian":  "те"
+    },
+    {
+        "WordId":  "942c689a-d713-4c54-8169-78da5224287c",
+        "Japanese":  "ト",
+        "Ukrainian":  "то"
+    },
+    {
+        "WordId":  "a4093c64-6073-4185-8471-bacc870cb07e",
+        "Japanese":  "ナ",
+        "Ukrainian":  "на"
+    },
+    {
+        "WordId":  "45348557-8790-47fc-aeba-162279f34fde",
+        "Japanese":  "ニ",
+        "Ukrainian":  "ні"
+    },
+    {
+        "WordId":  "2b813635-7abe-4c35-b0d6-d78f2fc76cac",
+        "Japanese":  "ヌ",
+        "Ukrainian":  "ну"
+    },
+    {
+        "WordId":  "e167a2a4-94e1-4764-a249-a175d1510e8a",
+        "Japanese":  "ネ",
+        "Ukrainian":  "не"
+    },
+    {
+        "WordId":  "4d530dda-9e2b-468c-8939-d89f8f1de31d",
+        "Japanese":  "ノ",
+        "Ukrainian":  "но"
+    },
+    {
+        "WordId":  "054c01d9-87d5-4778-be8b-84a275bb33ba",
+        "Japanese":  "ハ",
+        "Ukrainian":  "ха"
+    },
+    {
+        "WordId":  "3f1bc2c3-b7c3-4762-b5de-96cccfe30759",
+        "Japanese":  "ヒ",
+        "Ukrainian":  "хі"
+    },
+    {
+        "WordId":  "5a3c5c07-ad8a-43c7-8b7e-ca12ce5e3927",
+        "Japanese":  "フ",
+        "Ukrainian":  "фу"
+    },
+    {
+        "WordId":  "22fd4b7c-df48-4b51-b876-8099ad71f814",
+        "Japanese":  "ヘ",
+        "Ukrainian":  "хе"
+    },
+    {
+        "WordId":  "1f8b500b-7d22-4a9d-bd95-c2fd0fca457c",
+        "Japanese":  "ホ",
+        "Ukrainian":  "хо"
+    },
+    {
+        "WordId":  "ce7aab49-f345-4859-a44d-12452c6c4f25",
+        "Japanese":  "マ",
+        "Ukrainian":  "ма"
+    },
+    {
+        "WordId":  "a1e54a6b-daee-44db-ba8e-8e5a56e63f7b",
+        "Japanese":  "ミ",
+        "Ukrainian":  "мі"
+    },
+    {
+        "WordId":  "a7b27df8-8db7-40ac-bc23-d04d452d09ee",
+        "Japanese":  "ム",
+        "Ukrainian":  "му"
+    },
+    {
+        "WordId":  "6af8fee6-cd4a-443f-8b59-7706f526f3e5",
+        "Japanese":  "メ",
+        "Ukrainian":  "ме"
+    },
+    {
+        "WordId":  "69cb32e5-2147-4716-979a-4bca03f0dda2",
+        "Japanese":  "モ",
+        "Ukrainian":  "мо"
+    },
+    {
+        "WordId":  "b709d812-48c3-4dc0-813a-499401f9d7d0",
+        "Japanese":  "ヤ",
+        "Ukrainian":  "я"
+    },
+    {
+        "WordId":  "aceb4d1e-137e-4698-a3b5-5955c66a7b13",
+        "Japanese":  "ユ",
+        "Ukrainian":  "ю"
+    },
+    {
+        "WordId":  "402d81c4-0fb2-460a-b73c-574e604ebf2b",
+        "Japanese":  "ヨ",
+        "Ukrainian":  "йо"
+    },
+    {
+        "WordId":  "f2be97fa-b660-4490-83a2-89dc94a50917",
+        "Japanese":  "ラ",
+        "Ukrainian":  "ра"
+    },
+    {
+        "WordId":  "9e46ca25-bee5-46a5-9883-335b180aa6f1",
+        "Japanese":  "リ",
+        "Ukrainian":  "рі"
+    },
+    {
+        "WordId":  "e0882ee1-d475-4584-adad-2f74211a4679",
+        "Japanese":  "ル",
+        "Ukrainian":  "ру"
+    },
+    {
+        "WordId":  "55669391-fdb7-4ce4-9953-101374eaebd4",
+        "Japanese":  "レ",
+        "Ukrainian":  "ре"
+    },
+    {
+        "WordId":  "6d924f81-506e-4f42-8958-da64d80642fa",
+        "Japanese":  "ロ",
+        "Ukrainian":  "ро"
+    },
+    {
+        "WordId":  "c4c93486-6ed1-4a45-b204-4456c263e52d",
+        "Japanese":  "ワ",
+        "Ukrainian":  "ва"
+    },
+    {
+        "WordId":  "7e1450d2-c8a9-48b3-b258-4d23485f3502",
+        "Japanese":  "ヲ",
+        "Ukrainian":  "о"
+    },
+    {
+        "WordId":  "8130eb57-e17e-4491-92f6-e8cd57f5617f",
+        "Japanese":  "ン",
+        "Ukrainian":  "н"
+    },
+    {
+        "WordId":  "9921f957-3dec-4f08-b406-40332f573a7a",
+        "Japanese":  "ガ",
+        "Ukrainian":  "га"
+    },
+    {
+        "WordId":  "74b9dc47-157c-4ec0-ab36-5dbe1199295c",
+        "Japanese":  "ギ",
+        "Ukrainian":  "гі"
+    },
+    {
+        "WordId":  "7a279b68-cd6d-4fae-a00d-00d065851759",
+        "Japanese":  "グ",
+        "Ukrainian":  "гу"
+    },
+    {
+        "WordId":  "688e6572-9ebb-4075-8cba-95066c05fd96",
+        "Japanese":  "ゲ",
+        "Ukrainian":  "ге"
+    },
+    {
+        "WordId":  "acc41c5c-9fc9-4e18-86be-a52522100e71",
+        "Japanese":  "ゴ",
+        "Ukrainian":  "го"
+    },
+    {
+        "WordId":  "14ae3f83-46a8-4484-8a1d-e6995f81eb9c",
+        "Japanese":  "ザ",
+        "Ukrainian":  "за"
+    },
+    {
+        "WordId":  "156b4697-86ca-4a62-869f-9fd5472ecff8",
+        "Japanese":  "ジ",
+        "Ukrainian":  "жі"
+    },
+    {
+        "WordId":  "4a324096-11f1-42b9-8489-e1e1130a087b",
+        "Japanese":  "ズ",
+        "Ukrainian":  "зу"
+    },
+    {
+        "WordId":  "7824ec86-4308-4c70-b334-631ec04e3ec4",
+        "Japanese":  "ゼ",
+        "Ukrainian":  "зе"
+    },
+    {
+        "WordId":  "0c322f6b-ef56-4da4-b629-94098bbbff5e",
+        "Japanese":  "ゾ",
+        "Ukrainian":  "зо"
+    },
+    {
+        "WordId":  "fb7f4682-e81a-45a9-85af-82fd7d876bf4",
+        "Japanese":  "ダ",
+        "Ukrainian":  "да"
+    },
+    {
+        "WordId":  "b4ece392-5659-45ee-9b55-59d895563424",
+        "Japanese":  "ヂ",
+        "Ukrainian":  "джі"
+    },
+    {
+        "WordId":  "17096c83-60b5-4c79-b180-30198f385189",
+        "Japanese":  "ヅ",
+        "Ukrainian":  "дзу"
+    },
+    {
+        "WordId":  "34e7ad0c-985e-420c-b03e-79c8a6bab569",
+        "Japanese":  "デ",
+        "Ukrainian":  "де"
+    },
+    {
+        "WordId":  "a4c456a9-ce73-4b90-aa37-02403a1a37ee",
+        "Japanese":  "ド",
+        "Ukrainian":  "до"
+    },
+    {
+        "WordId":  "603c399f-fb23-4935-a694-ae02dc48b8e5",
+        "Japanese":  "バ",
+        "Ukrainian":  "ба"
+    },
+    {
+        "WordId":  "9937ef21-314f-4a5e-a6a8-72afb23decdc",
+        "Japanese":  "ビ",
+        "Ukrainian":  "бі"
+    },
+    {
+        "WordId":  "28354251-d64c-4039-8290-8f6a0bc0dfcc",
+        "Japanese":  "ブ",
+        "Ukrainian":  "бу"
+    },
+    {
+        "WordId":  "076a0b3f-48c0-4ace-ba21-5e4c9b6b5c53",
+        "Japanese":  "ベ",
+        "Ukrainian":  "бе"
+    },
+    {
+        "WordId":  "2de816fb-35cd-4366-8c03-8698e0776f0e",
+        "Japanese":  "ボ",
+        "Ukrainian":  "бо"
+    },
+    {
+        "WordId":  "7689e3b9-341b-4b2f-b48a-80677a4c8ff0",
+        "Japanese":  "パ",
+        "Ukrainian":  "па"
+    },
+    {
+        "WordId":  "b0b6454e-11f6-46e8-9d47-eea028647ecc",
+        "Japanese":  "ピ",
+        "Ukrainian":  "пі"
+    },
+    {
+        "WordId":  "ad8ea91e-3dd2-4fe8-a6da-7d78b5e8ba03",
+        "Japanese":  "プ",
+        "Ukrainian":  "пу"
+    },
+    {
+        "WordId":  "3b10cac9-aea7-41de-81f7-7ad05d8c5cb5",
+        "Japanese":  "ペ",
+        "Ukrainian":  "пе"
+    },
+    {
+        "WordId":  "4e6a0624-fe03-4467-ba48-e2fb55b78c0f",
+        "Japanese":  "ポ",
+        "Ukrainian":  "по"
+    }
+]

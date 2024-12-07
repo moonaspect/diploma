@@ -7,12 +7,12 @@ dynamodb = boto3.client('dynamodb', region_name='eu-north-1')
 
 # Load JSON file
 current_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(current_dir, "japan_words.json")
+file_path = os.path.join(current_dir, "katakana.json")
 with open(file_path, 'r', encoding='utf-8-sig') as f:
     words = json.load(f)
 
 # Insert each item into the DynamoDB table
-table_name = 'MatchingPairsTable'
+table_name = 'KatakanaTable'
 for word in words:
     dynamodb.put_item(
         TableName=table_name,

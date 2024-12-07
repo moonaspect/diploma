@@ -1,8 +1,8 @@
+using System.Text.Json;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using System.Text.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(
@@ -13,9 +13,7 @@ namespace DictionaryLambda;
 
 public class Function
 {
-    private static readonly string? _tableName = Environment.GetEnvironmentVariable(
-        "DICTIONARY_TABLE_NAME"
-    );
+    private static readonly string? _tableName = Environment.GetEnvironmentVariable("TABLE_NAME");
 
     public async Task<APIGatewayProxyResponse> FunctionHandler(
         APIGatewayProxyRequest request,
@@ -38,7 +36,7 @@ public class Function
             var letters = scanResponse
                 .Items.Select(item => new
                 {
-                    WordId = item["LetterId"].S,
+                    WordId = item["WordId"].S,
                     Japanese = item["Japanese"].S,
                     Ukrainian = item["Ukrainian"].S
                 })

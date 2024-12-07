@@ -38,7 +38,7 @@ public class Function
             var letters = scanResponse
                 .Items.Select(item => new
                 {
-                    WordId = item["LetterId"].S,
+                    WordId = item["WordId"].S,
                     Japanese = item["Japanese"].S,
                     Ukrainian = item["Ukrainian"].S
                 })
