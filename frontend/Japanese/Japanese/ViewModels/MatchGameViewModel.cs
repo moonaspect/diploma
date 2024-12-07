@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
 
-namespace Japanese
+namespace Japanese.ViewModels
 {
     public class MatchGameViewModel : INotifyPropertyChanged
     {

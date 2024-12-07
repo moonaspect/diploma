@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Japanese
+namespace Japanese.ViewModels
 {
     public class RecordsViewModel : INotifyPropertyChanged
     {
