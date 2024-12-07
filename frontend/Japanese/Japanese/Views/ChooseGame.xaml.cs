@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Japanese.Views;
 using SharpVectors.Converters;
 
 namespace Japanese
@@ -72,6 +73,7 @@ namespace Japanese
             Button buttonHiragana = CreateButton(hiraganaViewbox);
             buttonHiragana.Width = 200;
             buttonHiragana.Height = 45;
+            buttonHiragana.Click += ButtonHiragana;
 
             Button buttonKatakana = CreateButton(katakanaViewbox);
             buttonKatakana.Width = 200;
@@ -121,6 +123,13 @@ namespace Japanese
         {
             MatchGame matchGame = new MatchGame();
             matchGame.Show();
+            Close();
+        }
+
+        private void ButtonHiragana(object sender, RoutedEventArgs e)
+        {
+            Hiragana hiraganaGame = new Hiragana();
+            hiraganaGame.Show();
             Close();
         }
 

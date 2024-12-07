@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Net.Http;
 using System.Text.Json;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Japanese.ViewModels
 {
@@ -16,6 +18,14 @@ namespace Japanese.ViewModels
         private bool _isDataLoaded = false;
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand LoadWordsCommand { get; }
+
+        public HiraganaViewModel()
+        {
+            // Initialize Commands
+            LoadWordsCommand = new RelayCommand(async _ => await LoadWordsAsync());
+        }
 
         /// <summary>
         /// Asynchronously loads word pairs from the backend into WordPairs.
@@ -48,98 +58,12 @@ namespace Japanese.ViewModels
                     });
 
                     _isDataLoaded = true; // Mark data as loaded
-                    LoadNextBatch(); // Load the first batch of 4 word pairs
                 }
             }
             catch (HttpRequestException ex)
             {
-                GameMessage = $"Failed to load words: {ex.Message}";
+                Console.WriteLine($"Failed to load words: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        /// Handles a successful match by updating counters and checking if the game or batch is complete.
-        /// </summary>
-        public void HandleMatch()
-        {
-            _matchedPairsCount++;
-            _currentBatchMatches++;
-
-            if (_matchedPairsCount >= MaxMatches)
-            {
-                GameMessage = $"Congratulations! You have matched all {MaxMatches} pairs!";
-                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI that the game is over
-                return;
-            }
-
-            if (_currentBatchMatches == BatchSize)
-            {
-                _currentBatchMatches = 0; // Reset batch counter
-                GameMessage = "Batch complete! Loading next set of words...";
-                LoadNextBatch(); // Load the next batch
-            }
-            else
-            {
-                GameMessage = "Correct! Keep going!";
-            }
-        }
-
-        /// <summary>
-        /// Tracks mismatches and updates the game message accordingly.
-        /// </summary>
-        public void HandleMismatch()
-        {
-            GameMessage = "Incorrect, try again!";
-        }
-
-        /// <summary>
-        /// Loads the next batch of random word pairs from WordPairs into CurrentWordPairs.
-        /// </summary>
-        public void LoadNextBatch()
-        {
-            if (_matchedPairsCount >= MaxMatches)
-            {
-                GameMessage = "Congratulations! You have matched all 20 pairs!";
-                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI of game-over
-                return;
-            }
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                CurrentJapanesePairs.Clear();
-                CurrentUkrainianPairs.Clear();
-
-                // Select BatchSize random pairs
-                var nextBatch = HiraganaPairs.OrderBy(_ => _random.Next()).Take(BatchSize).ToList();
-
-                // Shuffle Japanese and Ukrainian pairs independently
-                foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))
-                {
-                    CurrentJapanesePairs.Add(pair);
-                }
-
-                foreach (var pair in nextBatch.OrderBy(_ => _random.Next()))
-                {
-                    CurrentUkrainianPairs.Add(pair);
-                }
-            });
-
-            OnPropertyChanged(nameof(CurrentJapanesePairs));
-            OnPropertyChanged(nameof(CurrentUkrainianPairs));
-        }
-
-        /// <summary>
-        /// Tracks successful matches and checks if the game is over.
-        /// </summary>
-        public bool CheckAndIncrementMatchCount()
-        {
-            _matchedPairsCount++;
-            if (_matchedPairsCount >= MaxMatches)
-            {
-                GameOver?.Invoke(this, EventArgs.Empty); // Notify the UI
-                return true;
-            }
-            return false;
         }
 
         /// <summary>

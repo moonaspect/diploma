@@ -16,7 +16,7 @@ namespace Japanese.Views
         public Hiragana()
         {
             InitializeComponent();
-            DataContext = new RecordsViewModel();
+            DataContext = new HiraganaViewModel();
 
             Grid mainGrid = new Grid();
 
@@ -29,7 +29,7 @@ namespace Japanese.Views
             SvgViewbox bgViewbox = new SvgViewbox
             {
                 Source = new Uri("pack://application:,,,./Resources/bg3.svg"),
-                Stretch = System.Windows.Media.Stretch.UniformToFill,
+                Stretch = Stretch.UniformToFill,
             };
             Grid.SetRowSpan(bgViewbox, 3);
             mainGrid.Children.Add(bgViewbox);
@@ -63,7 +63,7 @@ namespace Japanese.Views
 
             var titleTextBlock = new TextBlock
             {
-                Text = "Game Records Table",
+                Text = "Hiragana Table",
                 FontSize = 18,
                 FontWeight = FontWeights.Bold,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -81,22 +81,22 @@ namespace Japanese.Views
             };
             Grid.SetRow(dataGrid, 1);
 
-            Binding itemsSourceBinding = new Binding("GameRecords");
-            dataGrid.SetBinding(DataGrid.ItemsSourceProperty, itemsSourceBinding);
+            Binding itemsSourceBinding = new Binding("HiraganaPairs");
+            dataGrid.SetBinding(ItemsControl.ItemsSourceProperty, itemsSourceBinding);
 
             dataGrid.Columns.Add(
                 new DataGridTextColumn
                 {
-                    Header = "Player ID",
-                    Binding = new Binding("PlayerId"),
+                    Header = "Japanese",
+                    Binding = new Binding("Japanese"),
                     Width = new DataGridLength(1, DataGridLengthUnitType.Star)
                 }
             );
             dataGrid.Columns.Add(
                 new DataGridTextColumn
                 {
-                    Header = "Score",
-                    Binding = new Binding("Score"),
+                    Header = "Ukrainian",
+                    Binding = new Binding("Ukrainian"),
                     Width = new DataGridLength(1, DataGridLengthUnitType.Star)
                 }
             );
@@ -112,40 +112,18 @@ namespace Japanese.Views
             };
             Grid.SetRow(stackPanel, 2);
 
-            var refreshButton = new Button
-            {
-                Content = "Refresh",
-                Width = 100,
-                Height = 30,
-                Margin = new Thickness(5)
-            };
-            Binding refreshCommandBinding = new Binding("LoadRecordsCommand");
-            refreshButton.SetBinding(Button.CommandProperty, refreshCommandBinding);
-
-            var addButton = new Button
-            {
-                Content = "Add Record",
-                Width = 100,
-                Height = 30,
-                Margin = new Thickness(5)
-            };
-            Binding addCommandBinding = new Binding("SaveRecordCommand");
-            addButton.SetBinding(Button.CommandProperty, addCommandBinding);
-
-            stackPanel.Children.Add(refreshButton);
-            stackPanel.Children.Add(addButton);
             mainGrid.Children.Add(stackPanel);
 
-            this.Content = mainGrid;
+            Content = mainGrid;
 
-            this.Loaded += (sender, args) =>
+            Loaded += (sender, args) =>
             {
                 if (
-                    DataContext is RecordsViewModel viewModel
-                    && viewModel.LoadRecordsCommand.CanExecute(null)
+                    DataContext is HiraganaViewModel viewModel
+                    && viewModel.LoadWordsCommand.CanExecute(null)
                 )
                 {
-                    viewModel.LoadRecordsCommand.Execute(null);
+                    viewModel.LoadWordsCommand.Execute(null);
                 }
             };
         }
