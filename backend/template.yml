@@ -1,179 +1,538 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
 Resources:
-  DynamoDBStack:
+  # Lambda function for API handling
+  MatchingPairsHandler:
+    Type: AWS::Serverless::Function
     Properties:
-      TemplateURL: dynamodb_tables.yml
-    Type: AWS::CloudFormation::Stack
-  IAMRolesStack:
+      FunctionName: MatchingPairsHandler
+      Runtime: dotnet8
+      CodeUri: ./lambda/MatchingPairsLambda/
+      Handler: MatchingPairsLambda::MatchingPairsLambda.Function::FunctionHandler
+      Timeout: 15 
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MatchingPairsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MatchingPairsTable
+
+  GameRecordsHandlerRole:
+    Type: AWS::IAM::Role
     Properties:
-      TemplateURL: iam_roles.yml
-    Type: AWS::CloudFormation::Stack
-  LambdaStack:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: GameRecordsDynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Scan  # Add Scan permission
+                Resource: !GetAtt GameRecordsTable.Arn
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  GameRecordsHandler:
+    Type: AWS::Serverless::Function
     Properties:
-      TemplateURL: lambda_functions.yml
-    Type: AWS::CloudFormation::Stack
+      FunctionName: GameRecordsHandler
+      CodeUri: ./lambda/GameRecordsLambda/
+      Handler: GameRecordsLambda::GameRecordsLambda.Function::FunctionHandler
+      Runtime: dotnet8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref GameRecordsTable
+      Role: !GetAtt GameRecordsHandlerRole.Arn
+
+  GetRecordsHandlerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: GameRecordsDynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                Resource: !GetAtt GameRecordsTable.Arn
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  GetRecordsHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetRecordsHandler
+      CodeUri: ./lambda/GetRecordsLambda/
+      Handler: GetRecordsLambda::GetRecordsLambda.Function::GetRecordsHandler
+      Runtime: dotnet8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref GameRecordsTable
+      Role: !GetAtt GetRecordsHandlerRole.Arn
+
+  HiraganaHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: !GetAtt HiraganaTable.Arn
+          Version: '2012-10-17'
+        PolicyName: HiraganaDynamoDBAccess
+    Type: AWS::IAM::Role
+
+  HiraganaTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: HiraganaTable
+    Type: AWS::DynamoDB::Table
+
+  KatakanaTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: KatakanaTable
+    Type: AWS::DynamoDB::Table
+
+  DictionaryTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: WordId
+        AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+      - AttributeName: WordId
+        KeyType: HASH
+      TableName: DictionaryTable
+    Type: AWS::DynamoDB::Table
+
+  KatakanaHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: !GetAtt KatakanaTable.Arn
+          Version: '2012-10-17'
+        PolicyName: KatakanaDynamoDBAccess
+    Type: AWS::IAM::Role
+
+  DictionaryHandlerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:GetItem
+            - dynamodb:Scan
+            Effect: Allow
+            Resource: !GetAtt DictionaryTable.Arn
+          Version: '2012-10-17'
+        PolicyName: DictionaryDynamoDBAccess
+    Type: AWS::IAM::Role
+
+  HiraganaHandler:
+    Properties:
+      CodeUri: ./lambda/HiraganaLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: HiraganaTable
+      FunctionName: HiraganaHandler
+      Handler: HiraganaLambda::HiraganaLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: !GetAtt HiraganaHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+
+  KatakanaHandler:
+    Properties:
+      CodeUri: ./lambda/KatakanaLambda/
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: KatakanaTable
+      FunctionName: KatakanaHandler
+      Handler: KatakanaLambda::KatakanaLambda.Function::FunctionHandler
+      MemorySize: 128
+      Role: !GetAtt KatakanaHandlerRole.Arn
+      Runtime: dotnet8
+      Timeout: 10
+    Type: AWS::Serverless::Function
+
+  DictionaryHandler:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DictionaryHandler
+      CodeUri: ./lambda/DictionaryLambda/
+      Handler: DictionaryLambda::DictionaryLambda.Function::FunctionHandler
+      Runtime: dotnet8
+      MemorySize: 128
+      Timeout: 10
+      Environment:
+        Variables:
+          RECORDS_TABLE_NAME: !Ref DictionaryTable
+      Role: !GetAtt DictionaryHandlerRole.Arn
+
+  # DynamoDB table for storing Ukrainian-Japanese word pairs
+  MatchingPairsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: MatchingPairsTable
+      AttributeDefinitions:
+        - AttributeName: WordId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: WordId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # DynamoDB table for storing records
+  GameRecordsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: GameRecordsTable
+      AttributeDefinitions:
+        - AttributeName: PlayerId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PlayerId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # API Gateway REST API for the Matching Pairs service
   MatchingPairsApi:
+    Type: AWS::Serverless::Api
     Properties:
+      Name: MatchingPairsApi
+      StageName: prod
       DefinitionBody:
-        info:
-          description: API for Matching Pairs game
-          title: MatchingPairs Service
-          version: '1.0'
         openapi: 3.0.1
+        info:
+          title: MatchingPairs Service
+          description: API for Matching Pairs game
+          version: '1.0'
         paths:
-          /birecords:
-            get:
-              parameters:
-              - description: Page number for pagination (starts from 1)
-                in: query
-                name: pageNumber
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
-              - description: Number of items per page
-                in: query
-                name: pageSize
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
-              responses:
-                '200':
-                  content:
-                    application/json:
-                      schema:
-                        properties:
-                          Items:
-                            items:
-                              properties:
-                                PlayerId:
-                                  type: string
-                                Score:
-                                  type: integer
-                              type: object
-                            type: array
-                          PageNumber:
-                            type: integer
-                          PageSize:
-                            type: integer
-                          TotalItems:
-                            type: integer
-                        type: object
-                  description: Paginated list of game records
-              summary: Retrieve paginated game records
-              x-amazon-apigateway-integration:
-                httpMethod: GET
-                type: aws_proxy
-                uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
-            post:
-              requestBody:
-                content:
-                  application/json:
-                    schema:
-                      properties:
-                        PlayerId:
-                          type: string
-                        Score:
-                          type: integer
-                      required:
-                      - PlayerId
-                      - Score
-                      type: object
-                description: Game record to save
-                required: true
-              responses:
-                '200':
-                  content:
-                    text/plain:
-                      schema:
-                        type: string
-                  description: Record saved successfully
-              summary: Save a game record
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
           /records:
             get:
+              summary: Get Records Lambda
               parameters:
-              - description: Page number for pagination (starts from 1)
-                in: query
-                name: pageNumber
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
-              - description: Number of items per page
-                in: query
-                name: pageSize
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
+                - name: pageNumber
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Page number for pagination (starts from 1)
+                - name: pageSize
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Number of items per page
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetRecordsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
               responses:
                 '200':
+                  description: Get records table
                   content:
                     text/plain:
                       schema:
                         type: string
-                  description: Get records table
-              summary: Get Records Lambda
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetRecordsHandler.Arn}/invocations
           /words:
             get:
+              summary: Retrieve paginated or random list of word pairs
               parameters:
-              - description: Page number for pagination (starts from 1)
-                in: query
-                name: pageNumber
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
-              - description: Number of items per page
-                in: query
-                name: pageSize
-                required: false
-                schema:
-                  minimum: 1
-                  type: integer
-              - description: Specify "random" for random set of word pairs
-                in: query
-                name: action
-                required: false
-                schema:
-                  enum:
-                  - default
-                  - random
-                  type: string
+                - name: pageNumber
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Page number for pagination (starts from 1)
+                - name: pageSize
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Number of items per page
+                - name: action
+                  in: query
+                  required: false
+                  schema:
+                    type: string
+                    enum: [ "default", "random" ]
+                  description: Specify "random" for random set of word pairs
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
               responses:
                 '200':
+                  description: Paginated or random list of words
                   content:
                     application/json:
                       schema:
+                        type: object
                         properties:
-                          nextToken:
-                            description: Token for the next page
-                            type: string
                           words:
+                            type: array
                             items:
+                              type: object
                               properties:
                                 Japanese:
                                   type: string
                                 Ukrainian:
                                   type: string
-                              type: object
-                            type: array
-                        type: object
-                  description: Paginated or random list of words
-              summary: Retrieve paginated or random list of word pairs
+                          nextToken:
+                            type: string
+                            description: Token for the next page
+          /birecords:
+            get:
+              summary: Retrieve paginated game records
+              parameters:
+                - name: pageNumber
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Page number for pagination (starts from 1)
+                - name: pageSize
+                  in: query
+                  required: false
+                  schema:
+                    type: integer
+                    minimum: 1
+                  description: Number of items per page
               x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
+                httpMethod: GET
+                type: aws_proxy
+              responses:
+                '200':
+                  description: Paginated list of game records
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          TotalItems:
+                            type: integer
+                          Items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                PlayerId:
+                                  type: string
+                                Score:
+                                  type: integer
+                          PageNumber:
+                            type: integer
+                          PageSize:
+                            type: integer
+            post:
+              summary: Save a game record
+              requestBody:
+                description: Game record to save
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        PlayerId:
+                          type: string
+                        Score:
+                          type: integer
+                      required: [PlayerId, Score]
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GameRecordsHandler.Arn}/invocations
                 httpMethod: POST
                 type: aws_proxy
-                uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchingPairsHandler.Arn}/invocations
-      Name: MatchingPairsApi
-      StageName: prod
-    Type: AWS::Serverless::Api
+              responses:
+                '200':
+                  description: Record saved successfully
+                  content:
+                    text/plain:
+                      schema:
+                        type: string
+          /hiragana:
+            get:
+              summary: Get Records Lambda
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HiraganaHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: Get hiragana table
+                  content:
+                    text/plain:
+                      schema:
+                        type: string
+          /katakana:
+            get:
+              summary: Get Records Lambda
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${KatakanaHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: Get hiragana table
+                  content:
+                    text/plain:
+                      schema:
+                        type: string
+          /dictionary:
+            get:
+              summary: Get Records Lambda
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DictionaryHandler.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: Get hiragana table
+                  content:
+                    text/plain:
+                      schema:
+                        type: string
+
+  # Permission for API Gateway to invoke GameRecordsHandler Lambda
+  ApiGatewayInvokeGameRecordsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GameRecordsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+  # Permission for API Gateway to invoke Lambda
+  ApiGatewayInvokeMatchingPairsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt MatchingPairsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+  ApiGatewayInvokeGetRecordsLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt GetRecordsHandler.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+  ApiGatewayInvokeHiraganaLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt HiraganaHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+  ApiGatewayInvokeKatakanaLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt KatakanaHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+  ApiGatewayInvokeDictionaryLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt DictionaryHandler.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/*
+
+Outputs:
+  MatchingPairsApi:
+    Value: !Ref MatchingPairsApi
+    Export:
+      Name: MatchingPairsApiExport
+  PairsTableName:
+    Description: Name of the MatchingPairs table
+    Value: !Ref MatchingPairsTable
+  RecordsTableName:
+    Description: Name of the GameRecords table
+    Value: !Ref GameRecordsTable
+
