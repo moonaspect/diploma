@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Japanese.Views;
 using SharpVectors.Converters;
 
 namespace Japanese
@@ -56,6 +57,7 @@ namespace Japanese
             buttonMatch.Height = 78;
 
             Button buttonDictionary = CreateButton(dictViewbox);
+            buttonDictionary.Click += ButtonDict;
             buttonDictionary.Width = 180;
             buttonDictionary.Height = 43;
 
@@ -137,7 +139,12 @@ namespace Japanese
             chooseGame.Show();
             Close();
         }
-
+        private void ButtonDict(object sender, RoutedEventArgs e)
+        {
+            Dictionary dict = new Dictionary();
+            dict.Show();
+            Close();
+        }
         private void ButtonRecords(object sender, RoutedEventArgs e)
         {
             RecordsTable recordsTable = new RecordsTable();

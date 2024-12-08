@@ -78,6 +78,7 @@ namespace Japanese
             Button buttonKatakana = CreateButton(katakanaViewbox);
             buttonKatakana.Width = 200;
             buttonKatakana.Height = 45;
+            buttonKatakana.Click += ButtonKatakana;
 
             Button buttonMatch = CreateButton(wordsViewbox);
             buttonMatch.Click += ButtonMatch;
@@ -132,7 +133,12 @@ namespace Japanese
             hiraganaGame.Show();
             Close();
         }
-
+        private void ButtonKatakana(object sender, RoutedEventArgs e)
+        {
+            Katakana katakanaGame = new Katakana();
+            katakanaGame.Show();
+            Close();
+        }
         private void ButtonBack(object sender, RoutedEventArgs e)
         {
             MainWindow mainWindow = new MainWindow();
