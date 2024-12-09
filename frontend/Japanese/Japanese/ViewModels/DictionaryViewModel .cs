@@ -1,9 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Net.Http;
-using System.Text.Json;
-using System.Windows;
-using System.Windows.Input;
 
 namespace Japanese.ViewModels
 {
@@ -11,58 +7,30 @@ namespace Japanese.ViewModels
     {
         public ObservableCollection<WordPair> WordPairs { get; private set; } = new();
 
-        private static readonly HttpClient HttpClient = new();
-        private const string ApiUrlBase =
-            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/words";
-
-        private bool _isDataLoaded = false;
-
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public ICommand LoadWordsCommand { get; }
 
         public DictionaryViewModel()
         {
-            // Initialize Commands
-            LoadWordsCommand = new RelayCommand(async _ => await LoadWordsAsync());
+            LoadWords();
         }
 
         /// <summary>
-        /// Asynchronously loads word pairs from the backend into WordPairs.
+        /// Loads word pairs from the backend into WordPairs.
         /// </summary>
-        public async Task LoadWordsAsync()
+        private void LoadWords()
         {
-            if (_isDataLoaded)
-            {
-                // If data is already loaded, no need to fetch again
+            var wordPairService = new WordPairService(
+                new PersistentCache<WordPair>("wordpairs.json")
+            );
+            var pairs = wordPairService.GetWordPairs();
+
+            if (pairs == null)
                 return;
-            }
 
-            try
+            WordPairs.Clear();
+            foreach (var pair in pairs)
             {
-                var response = await HttpClient.GetAsync(ApiUrlBase);
-                response.EnsureSuccessStatusCode();
-
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var wordPairsResponse = JsonSerializer.Deserialize<WordPairResponse>(responseBody);
-
-                if (wordPairsResponse != null)
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        WordPairs.Clear();
-                        foreach (var pair in wordPairsResponse.Items)
-                        {
-                            WordPairs.Add(pair);
-                        }
-                    });
-
-                    _isDataLoaded = true; // Mark data as loaded
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Failed to load words: {ex.Message}");
+                WordPairs.Add(pair);
             }
         }
 

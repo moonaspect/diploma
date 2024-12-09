@@ -115,17 +115,6 @@ namespace Japanese.Views
             mainGrid.Children.Add(stackPanel);
 
             Content = mainGrid;
-
-            Loaded += (sender, args) =>
-            {
-                if (
-                    DataContext is DictionaryViewModel viewModel
-                    && viewModel.LoadWordsCommand.CanExecute(null)
-                )
-                {
-                    viewModel.LoadWordsCommand.Execute(null);
-                }
-            };
         }
 
         private Button CreateButton(SvgViewbox content)

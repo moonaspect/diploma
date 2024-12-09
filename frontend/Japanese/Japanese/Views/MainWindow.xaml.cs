@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Japanese.ViewModels;
 using Japanese.Views;
 using SharpVectors.Converters;
 
@@ -12,8 +13,14 @@ namespace Japanese
     /// </summary>
     public partial class MainWindow : Window
     {
+        public IList<WordPair> WordPairs { get; init; }
+
         public MainWindow()
         {
+            var wordPairService = new WordPairService(
+                new PersistentCache<WordPair>("wordpairs.json")
+            );
+            WordPairs = wordPairService.GetWordPairs();
             InitializeComponent();
 
             // Create the main Grid
@@ -139,12 +146,14 @@ namespace Japanese
             chooseGame.Show();
             Close();
         }
+
         private void ButtonDict(object sender, RoutedEventArgs e)
         {
             Dictionary dict = new Dictionary();
             dict.Show();
             Close();
         }
+
         private void ButtonRecords(object sender, RoutedEventArgs e)
         {
             RecordsTable recordsTable = new RecordsTable();
