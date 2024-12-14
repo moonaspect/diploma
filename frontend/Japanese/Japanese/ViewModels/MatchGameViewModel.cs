@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
-using System.Text.Json;
 using System.Windows;
 
 namespace Japanese.ViewModels
@@ -12,12 +11,7 @@ namespace Japanese.ViewModels
         public ObservableCollection<WordPair> CurrentJapanesePairs { get; private set; } = new();
         public ObservableCollection<WordPair> CurrentUkrainianPairs { get; private set; } = new();
 
-        private static readonly HttpClient HttpClient = new();
-        private const string ApiUrlBase =
-            "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=100&pageNumber=1";
-
         private readonly Random _random = new();
-        private bool _isDataLoaded = false;
         private int _matchedPairsCount = 0; // Count of successfully matched pairs
         private int _currentBatchMatches = 0; // Matches in the current batch
         private const int MaxMatches = 20; // Stop game after 20 matches
@@ -38,39 +32,33 @@ namespace Japanese.ViewModels
 
         public event EventHandler? GameOver; // Event to notify when the game is over
 
-        /// <summary>
-        /// Asynchronously loads word pairs from the backend into WordPairs.
-        /// </summary>
-        public async Task LoadWordsAsync()
+        public MatchGameViewModel()
         {
-            if (_isDataLoaded)
-            {
-                // If data is already loaded, no need to fetch again
-                return;
-            }
+            LoadWords();
+        }
 
+        /// <summary>
+        /// Loads word pairs from the backend into WordPairs.
+        /// </summary>
+        private void LoadWords()
+        {
             try
             {
-                var response = await HttpClient.GetAsync(ApiUrlBase);
-                response.EnsureSuccessStatusCode();
+                var wordPairService = new WordPairService(
+                    new PersistentCache<WordPair>("wordpairs.json")
+                );
+                var pairs = wordPairService.GetWordPairs();
 
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var wordPairsResponse = JsonSerializer.Deserialize<WordPairResponse>(responseBody);
+                if (pairs == null)
+                    return;
 
-                if (wordPairsResponse != null)
+                WordPairs.Clear();
+                foreach (var pair in pairs)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        WordPairs.Clear();
-                        foreach (var pair in wordPairsResponse.Items)
-                        {
-                            WordPairs.Add(pair);
-                        }
-                    });
-
-                    _isDataLoaded = true; // Mark data as loaded
-                    LoadNextBatch(); // Load the first batch of 4 word pairs
+                    WordPairs.Add(pair);
                 }
+
+                LoadNextBatch();
             }
             catch (HttpRequestException ex)
             {

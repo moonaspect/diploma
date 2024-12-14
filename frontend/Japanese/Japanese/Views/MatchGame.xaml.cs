@@ -20,7 +20,6 @@ namespace Japanese
             InitializeComponent();
             RecordsViewModel = new RecordsViewModel();
 
-            Loaded += async (s, e) => await ViewModel.LoadWordsAsync();
             ViewModel.GameOver += OnGameOver; // Subscribe to GameOver event
 
             Grid mainGrid = new Grid();
