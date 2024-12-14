@@ -1,9 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Net.Http;
-using System.Text.Json;
-using System.Windows;
-using System.Windows.Input;
 
 namespace Japanese.ViewModels
 {
@@ -11,56 +7,41 @@ namespace Japanese.ViewModels
     {
         public ObservableCollection<WordPair> HiraganaPairs { get; private set; } = new();
 
-        private static readonly HttpClient HttpClient = new();
         private const string ApiUrlBase =
             "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/hiragana";
 
-        private bool _isDataLoaded = false;
-
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        public ICommand LoadWordsCommand { get; }
 
         public HiraganaViewModel()
         {
-            // Initialize Commands
-            LoadWordsCommand = new RelayCommand(async _ => await LoadWordsAsync());
+            LoadWords();
         }
 
         /// <summary>
-        /// Asynchronously loads word pairs from the backend into WordPairs.
+        /// Loads word pairs from the backend into WordPairs.
         /// </summary>
-        public async Task LoadWordsAsync()
+        private void LoadWords()
         {
-            if (_isDataLoaded)
-            {
-                // If data is already loaded, no need to fetch again
-                return;
-            }
-
             try
             {
-                var response = await HttpClient.GetAsync(ApiUrlBase);
-                response.EnsureSuccessStatusCode();
+                var wordPairService = new WordPairService(
+                    ApiUrlBase,
+                    new PersistentCache<WordPair>("hiragana.json")
+                );
+                var pairs = wordPairService.GetWordPairs();
 
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var wordPairsResponse = JsonSerializer.Deserialize<WordPairResponse>(responseBody);
+                if (pairs == null)
+                    return;
 
-                if (wordPairsResponse != null)
+                HiraganaPairs.Clear();
+                foreach (var pair in pairs)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        HiraganaPairs.Clear();
-                        foreach (var pair in wordPairsResponse.Items)
-                        {
-                            HiraganaPairs.Add(pair);
-                        }
-                    });
-
-                    _isDataLoaded = true; // Mark data as loaded
+                    HiraganaPairs.Add(pair);
                 }
+
+                OnPropertyChanged(nameof(HiraganaPairs));
             }
-            catch (HttpRequestException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Failed to load words: {ex.Message}");
             }

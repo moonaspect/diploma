@@ -5,7 +5,7 @@ using Japanese.ViewModels;
 public class WordPairService : IWordPairService
 {
     private static readonly HttpClient HttpClient = new();
-    private const string ApiUrlBase =
+    private readonly string _apiUrlBase =
         "https://lkrfzpjnh7.execute-api.eu-north-1.amazonaws.com/prod/words?pageSize=100&pageNumber=1";
 
     private readonly ICache<WordPair> _cachedWordPairs;
@@ -13,6 +13,12 @@ public class WordPairService : IWordPairService
     public WordPairService(ICache<WordPair> cachingService)
     {
         _cachedWordPairs = cachingService;
+    }
+
+    public WordPairService(string apiUrlBase, ICache<WordPair> cachingService)
+        : this(cachingService)
+    {
+        _apiUrlBase = apiUrlBase;
     }
 
     public IList<WordPair> GetWordPairs()
@@ -24,7 +30,7 @@ public class WordPairService : IWordPairService
     {
         try
         {
-            var response = await HttpClient.GetAsync(ApiUrlBase).ConfigureAwait(false);
+            var response = await HttpClient.GetAsync(_apiUrlBase).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
 
             var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
